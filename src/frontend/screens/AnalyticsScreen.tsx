@@ -13,7 +13,15 @@ import {
   Target, 
   Clock,
   BookOpen,
-  FileText
+  FileText,
+  Atom,
+  FlaskConical,
+  Calculator,
+  Dna,
+  Languages,
+  Cpu,
+  History as HistoryIcon,
+  Coins
 } from 'lucide-react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
@@ -132,16 +140,33 @@ const AnalyticsStatBox = React.memo(({ icon, label, value, sub, delay = 300 }: a
 
 const HeatmapItem = React.memo(({ label, progress }: any) => {
   const { colors } = useTheme();
+  
+  const getSubjectIcon = (label: string) => {
+    const l = label.toUpperCase();
+    if (l.includes('PHY')) return <Atom size={18} color="#FFF" />;
+    if (l.includes('CHE')) return <FlaskConical size={18} color="#FFF" />;
+    if (l.includes('MAT')) return <Calculator size={18} color="#FFF" />;
+    if (l.includes('BIO')) return <Dna size={18} color="#FFF" />;
+    if (l.includes('ENG')) return <Languages size={18} color="#FFF" />;
+    if (l.includes('COM') || l.includes('CS')) return <Cpu size={18} color="#FFF" />;
+    if (l.includes('HIS')) return <HistoryIcon size={18} color="#FFF" />;
+    if (l.includes('ECO')) return <Coins size={18} color="#FFF" />;
+    return <BookOpen size={18} color="#FFF" />;
+  };
+
   return (
     <View style={styles.heatmapItem}>
       <View style={[
         styles.heatmapBox, 
         { 
-          opacity: 0.2 + (progress || 0) * 0.8, 
+          opacity: 0.3 + (progress || 0) * 0.7, 
           backgroundColor: colors.accent 
         }
-      ]} />
-      <Text style={[styles.heatmapLabel, { color: colors.textSecondary }]}>{label}</Text>
+      ]}>
+        {getSubjectIcon(label)}
+      </View>
+      <Text style={[styles.heatmapLabel, { color: colors.textPrimary }]}>{label}</Text>
+      <Text style={[styles.heatmapPercent, { color: colors.textSecondary }]}>{Math.round(progress * 100)}%</Text>
     </View>
   );
 });
@@ -153,12 +178,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContent: {
-    paddingTop: 20,
+    paddingTop: 10,
   },
   title: {
     fontSize: 28,
     fontWeight: '800',
     marginBottom: 20,
+    textAlign: 'center',
   },
   mainChartCard: {
     padding: 20,
@@ -228,28 +254,42 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   heatmapCard: {
-    padding: 20,
+    padding: 24,
     marginBottom: 24,
   },
   heatmapGrid: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     flexWrap: 'wrap',
+    marginHorizontal: -8,
   },
   heatmapItem: {
     alignItems: 'center',
-    width: '30%',
-    marginBottom: 16,
+    width: '25%',
+    marginBottom: 20,
+    paddingHorizontal: 8,
   },
   heatmapBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
+    width: 50,
+    height: 50,
+    borderRadius: 14,
     marginBottom: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   heatmapLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  heatmapPercent: {
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '600',
+    marginTop: 2,
   },
   emptyText: {
     fontSize: 14,

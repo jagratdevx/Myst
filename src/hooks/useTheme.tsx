@@ -9,8 +9,10 @@ interface ThemeContextType {
   theme: ThemeType;
   colors: typeof THEME_COLORS.dark;
   isDark: boolean;
+  isHighContrast: boolean;
   setTheme: (theme: ThemeType) => Promise<void>;
   toggleTheme: () => Promise<void>;
+  toggleHighContrast: () => Promise<void>;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -24,8 +26,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const loadTheme = async () => {
       try {
         const savedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY);
-        if (savedTheme === 'dark' || savedTheme === 'light') {
-          setInternalTheme(savedTheme);
+        if (savedTheme === 'dark' || savedTheme === 'light' || savedTheme === 'highContrast') {
+          setInternalTheme(savedTheme as ThemeType);
         } else {
           // Default to system or dark
           setInternalTheme(systemColorScheme === 'light' ? 'light' : 'dark');
@@ -40,7 +42,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, []);
 
   const colors = useMemo(() => THEME_COLORS[theme], [theme]);
-  const isDark = theme === 'dark';
+  const isDark = theme === 'dark' || theme === 'highContrast';
+  const isHighContrast = theme === 'highContrast';
 
   const setTheme = async (newTheme: ThemeType) => {
     setInternalTheme(newTheme);
@@ -52,7 +55,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const toggleTheme = async () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    await setTheme(newTheme);
+  };
+
+  const toggleHighContrast = async () => {
+    const newTheme = theme === 'highContrast' ? (systemColorScheme === 'light' ? 'light' : 'dark') : 'highContrast';
     await setTheme(newTheme);
   };
 
@@ -60,9 +68,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     theme,
     colors,
     isDark,
+    isHighContrast,
     setTheme,
     toggleTheme,
-  }), [theme, colors, isDark]);
+    toggleHighContrast,
+  }), [theme, colors, isDark, isHighContrast]);
 
   if (!isLoaded) return null; // Or a splash screen
 

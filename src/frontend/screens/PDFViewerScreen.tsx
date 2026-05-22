@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
-import { WebView } from 'react-native-webview';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ActivityIndicator, Dimensions } from 'react-native';
+import Pdf from 'react-native-pdf';
 import * as Sharing from 'expo-sharing';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTheme } from '../../hooks/useTheme';
 import { usePDFStore } from '../../store/usePDFStore';
-import { ChevronLeft, Share2, ExternalLink } from 'lucide-react-native';
+import { ChevronLeft, Share2, FileText } from 'lucide-react-native';
 
 export const PDFViewerScreen = () => {
   const navigation = useNavigation();
@@ -13,6 +13,9 @@ export const PDFViewerScreen = () => {
   const { colors } = useTheme();
   const { markAsOpened } = usePDFStore();
   const { pdf } = route.params;
+
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPages] = useState(1);
 
   useEffect(() => {
     markAsOpened(pdf.id);
@@ -24,9 +27,7 @@ export const PDFViewerScreen = () => {
     }
   };
 
-  // For Android, Webview doesn't support local PDF viewing directly as easily as iOS
-  // A common trick is to use Google Docs viewer for remote URLs, 
-  // but for local files, expo-sharing is the most reliable fallback if WebView fails.
+  const source = { uri: pdf.uri, cache: true };
   
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -35,37 +36,37 @@ export const PDFViewerScreen = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <ChevronLeft size={24} color={colors.textPrimary} />
         </TouchableOpacity>
-        <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
-          {pdf.name}
-        </Text>
+        
+        <View style={styles.titleContainer}>
+          <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
+            {pdf.name}
+          </Text>
+          <Text style={[styles.pageIndicator, { color: colors.textSecondary }]}>
+            Page {currentPage} of {totalPages}
+          </Text>
+        </View>
+
         <TouchableOpacity onPress={handleShare} style={styles.actionBtn}>
           <Share2 size={20} color={colors.textPrimary} />
         </TouchableOpacity>
       </View>
 
-      {Platform.OS === 'ios' ? (
-        <WebView 
-          source={{ uri: pdf.uri }} 
-          style={styles.webview} 
-          scalesPageToFit
+      <View style={styles.pdfContainer}>
+        <Pdf
+          source={source}
+          onLoadComplete={(numberOfPages) => {
+            setTotalPages(numberOfPages);
+          }}
+          onPageChanged={(page) => {
+            setCurrentPages(page);
+          }}
+          onError={(error) => {
+            console.log('PDF Error:', error);
+          }}
+          style={styles.pdf}
+          activityIndicator={<ActivityIndicator color={colors.accent} size="large" />}
         />
-      ) : (
-        <View style={styles.androidFallback}>
-          <ExternalLink size={48} color={colors.accent} />
-          <Text style={[styles.fallbackText, { color: colors.textPrimary }]}>
-            PDF Preview is optimized for iOS.
-          </Text>
-          <Text style={[styles.fallbackSub, { color: colors.textSecondary }]}>
-            Use the system viewer to read this document on Android.
-          </Text>
-          <TouchableOpacity 
-            style={[styles.openBtn, { backgroundColor: colors.accent }]}
-            onPress={handleShare}
-          >
-            <Text style={styles.openBtnText}>Open Document</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      </View>
     </View>
   );
 };
@@ -78,51 +79,43 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingTop: 50,
-    paddingBottom: 15,
+    paddingBottom: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
+    height: 100,
   },
   backBtn: {
     padding: 8,
+    borderRadius: 12,
   },
-  title: {
+  titleContainer: {
     flex: 1,
-    fontSize: 16,
-    fontWeight: '700',
     marginHorizontal: 12,
   },
+  title: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  pageIndicator: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 2,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
   actionBtn: {
-    padding: 8,
+    padding: 10,
+    borderRadius: 12,
   },
-  webview: {
+  pdfContainer: {
     flex: 1,
+    backgroundColor: '#1a1a1a', // Dark background for PDF viewing
   },
-  androidFallback: {
+  pdf: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40,
-  },
-  fallbackText: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginTop: 20,
-    textAlign: 'center',
-  },
-  fallbackSub: {
-    fontSize: 14,
-    marginTop: 8,
-    textAlign: 'center',
-    marginBottom: 32,
-  },
-  openBtn: {
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 16,
-  },
-  openBtnText: {
-    color: '#FFF',
-    fontWeight: '700',
-    fontSize: 16,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    backgroundColor: '#1a1a1a',
   },
 });
+

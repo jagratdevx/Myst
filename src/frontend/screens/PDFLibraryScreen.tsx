@@ -139,7 +139,7 @@ export const PDFLibraryScreen = () => {
 
 const styles = StyleSheet.create({
   scrollContent: {
-    paddingTop: 20,
+    paddingTop: 10,
   },
   header: {
     marginBottom: 10,
@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '800',
     marginBottom: 20,
+    textAlign: 'center',
   },
   searchBar: {
     flexDirection: 'row',

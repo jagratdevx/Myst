@@ -84,7 +84,8 @@ export const PlannerScreen = () => {
     <View>
       {/* Header */}
       <View style={styles.header}>
-        <View>
+        <View style={{ width: 88 }} /> 
+        <View style={styles.headerTextContainer}>
           <Text style={[styles.title, { color: colors.textPrimary }]}>Study Planner</Text>
           <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
             {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
@@ -193,7 +194,7 @@ export const PlannerScreen = () => {
 const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 10,
   },
   header: {
     flexDirection: 'row',
@@ -201,15 +202,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
+  headerTextContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
   title: {
     fontSize: 28,
     fontWeight: '800',
     letterSpacing: -0.5,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
     fontWeight: '600',
     marginTop: 2,
+    textAlign: 'center',
   },
   headerActions: {
     flexDirection: 'row',

@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  KeyboardAvoidingView, 
+  Platform, 
+  ScrollView, 
+  TouchableWithoutFeedback, 
+  Keyboard 
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AnimatedScreenWrapper } from '../../ui/AnimatedScreenWrapper';
 import { GlowButton } from '../../ui/GlowButton';
@@ -24,45 +33,54 @@ export const OnboardingProfile = () => {
 
   return (
     <AnimatedScreenWrapper>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}
-      >
-        <View style={styles.header}>
-          <Text style={[styles.title, { color: colors.textPrimary }]}>Tell us about you</Text>
-          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-            This helps us personalize your academic experience.
-          </Text>
-        </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.container}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        >
+          <ScrollView 
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.header}>
+              <Text style={[styles.title, { color: colors.textPrimary }]}>Tell us about you</Text>
+              <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+                This helps us personalize your academic experience.
+              </Text>
+            </View>
 
-        <View style={styles.form}>
-          <Animated.View entering={FadeInDown.delay(200)}>
-            <Text style={[styles.label, { color: colors.textSecondary }]}>Full Name</Text>
-            <GlassInput 
-              placeholder="e.g. Alex Johnson"
-              value={name}
-              onChangeText={setName}
+            <View style={styles.form}>
+              <Animated.View entering={FadeInDown.delay(200)}>
+                <Text style={[styles.label, { color: colors.textSecondary }]}>Full Name</Text>
+                <GlassInput 
+                  placeholder="e.g. Alex Johnson"
+                  value={name}
+                  onChangeText={setName}
+                />
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(400)} style={{ marginTop: 24 }}>
+                <Text style={[styles.label, { color: colors.textSecondary }]}>Class / Grade</Text>
+                <GlassInput 
+                  placeholder="e.g. 11th Grade"
+                  value={grade}
+                  onChangeText={setGrade}
+                />
+              </Animated.View>
+            </View>
+          </ScrollView>
+
+          <View style={styles.footer}>
+            <GlowButton 
+              label="Continue" 
+              onPress={handleNext}
+              disabled={!name.trim() || !grade.trim()}
             />
-          </Animated.View>
-
-          <Animated.View entering={FadeInDown.delay(400)} style={{ marginTop: 24 }}>
-            <Text style={[styles.label, { color: colors.textSecondary }]}>Class / Grade</Text>
-            <GlassInput 
-              placeholder="e.g. 11th Grade"
-              value={grade}
-              onChangeText={setGrade}
-            />
-          </Animated.View>
-        </View>
-
-        <View style={styles.footer}>
-          <GlowButton 
-            label="Continue" 
-            onPress={handleNext}
-            disabled={!name.trim() || !grade.trim()}
-          />
-        </View>
-      </KeyboardAvoidingView>
+          </View>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </AnimatedScreenWrapper>
   );
 };
@@ -70,24 +88,30 @@ export const OnboardingProfile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  scrollContent: {
     padding: 30,
-    justifyContent: 'space-between',
+    paddingTop: 10,
+    flexGrow: 1,
   },
   header: {
-    marginTop: 40,
+    marginTop: 20,
+    alignItems: 'center',
   },
   title: {
     fontSize: 28,
     fontWeight: '800',
     marginBottom: 12,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     lineHeight: 24,
+    textAlign: 'center',
   },
   form: {
     flex: 1,
-    marginTop: 60,
+    marginTop: 40,
   },
   label: {
     fontSize: 14,
@@ -98,6 +122,8 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   footer: {
-    marginBottom: 20,
+    padding: 30,
+    paddingTop: 10,
+    marginBottom: 10,
   },
 });

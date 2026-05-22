@@ -70,7 +70,7 @@ export const DashboardScreen = () => {
         contentContainerStyle={[styles.scrollContent, { paddingHorizontal: contentPadding }]}
       >
         {/* Header Section */}
-        <Animated.View entering={FadeIn.delay(200)}>
+        <Animated.View entering={FadeIn.delay(200)} style={styles.headerContainer}>
           <Text style={[styles.greeting, { color: colors.textPrimary }]}>Hi, {profile?.name?.split(' ')[0] || 'Student'}</Text>
           <Text style={[styles.date, { color: colors.textSecondary }]}>{today}</Text>
         </Animated.View>
@@ -184,17 +184,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContent: {
-    paddingTop: 20,
+    paddingTop: 10,
+  },
+  headerContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
   },
   greeting: {
     fontSize: 28,
     fontWeight: '800',
     letterSpacing: -0.5,
+    textAlign: 'center',
   },
   date: {
     fontSize: 16,
     marginTop: 4,
     fontWeight: '500',
+    textAlign: 'center',
   },
   ringSection: {
     marginTop: 24,

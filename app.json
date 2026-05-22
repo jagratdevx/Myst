@@ -1,10 +1,25 @@
 {
   "expo": {
+    "name": "Myst",
+    "slug": "myst",
+    "version": "1.0.0",
     "extra": {
       "eas": {
         "projectId": "7bfdfae6-64ec-49d4-af60-817feba1f76e"
       }
     },
-    "owner": "jagrat.devx"
+    "owner": "jagrat.devx",
+    "splash": {
+      "backgroundColor": "#081120"
+    },
+    "android": {
+      "package": "com.jagrat.devx.myst"
+    },
+    "ios": {
+      "bundleIdentifier": "com.jagrat.devx.myst",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
   }
 }

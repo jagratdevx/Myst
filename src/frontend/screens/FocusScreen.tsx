@@ -9,23 +9,23 @@ import { AnimatedStatCard } from '../ui/AnimatedStatCard';
 import { useTheme } from '../../hooks/useTheme';
 import { useFocusStore } from '../../store/useFocusStore';
 import { 
-  RotateCcw, 
-  Coffee, 
-  Wind, 
-  Moon,
-  Zap,
-  Flame,
-  Clock
+  RotateCcw as RotateIcon, 
+  Coffee as CoffeeIcon, 
+  Wind as WindIcon, 
+  Moon as MoonIcon,
+  Zap as ZapIcon,
+  Flame as FlameIcon,
+  Clock as ClockIcon
 } from 'lucide-react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Audio } from 'expo-av';
 
 const AMBIENT_SOUNDS = [
-  { id: 'rain', label: 'Rain', icon: <Wind size={20} />, file: require('../../assets/audio/liecio-calming-rain-257596.mp3') },
-  { id: 'forest', label: 'Forest', icon: <Moon size={20} />, file: require('../../assets/audio/dany_photo-forestbirds-319791.mp3') },
-  { id: 'cafe', label: 'Cafe', icon: <Coffee size={20} />, file: require('../../assets/audio/km007-cafe-ambience-9263.mp3') },
-  { id: 'white', label: 'Noise', icon: <Zap size={20} />, file: require('../../assets/audio/themediaguy-soft-soothing-deep-white-noise-378857.mp3') },
+  { id: 'rain', label: 'Rain', icon: <WindIcon size={20} />, file: require('../../assets/audio/rain.mp3') },
+  { id: 'forest', label: 'Forest', icon: <MoonIcon size={20} />, file: require('../../assets/audio/forest.mp3') },
+  { id: 'cafe', label: 'Cafe', icon: <CoffeeIcon size={20} />, file: require('../../assets/audio/cafe.mp3') },
+  { id: 'white', label: 'Noise', icon: <ZapIcon size={20} />, file: require('../../assets/audio/noise.mp3') },
 ];
 
 export const FocusScreen = () => {
@@ -136,7 +136,7 @@ export const FocusScreen = () => {
         {/* Controls */}
         <View style={styles.controlsRow}>
           <TouchableOpacity onPress={resetTimer} style={[styles.iconButton, { backgroundColor: colors.glass, borderColor: colors.border }]}>
-            <RotateCcw color={colors.textSecondary} size={24} />
+            <RotateIcon color={colors.textSecondary} size={24} />
           </TouchableOpacity>
           
           <GlowButton 
@@ -155,13 +155,18 @@ export const FocusScreen = () => {
               }
             }}
           >
-            <Coffee color={mode === 'break' ? colors.accent : colors.textSecondary} size={24} />
+            <CoffeeIcon color={mode === 'break' ? colors.accent : colors.textSecondary} size={24} />
           </TouchableOpacity>
         </View>
 
         {/* Ambient Modes */}
-        <SectionHeader title="Ambient Sounds" />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.ambientScroll}>
+        <SectionHeader title="Ambient Sounds" style={styles.sectionHeaderCentered} />
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          style={styles.ambientScroll}
+          contentContainerStyle={styles.ambientContent}
+        >
           {AMBIENT_SOUNDS.map((item) => (
             <AmbientItem 
               key={item.id}
@@ -174,25 +179,29 @@ export const FocusScreen = () => {
         </ScrollView>
 
         {/* Stats */}
-        <SectionHeader title="Focus Overview" />
+        <SectionHeader title="Focus Overview" style={styles.sectionHeaderCentered} />
         <View style={styles.statsGrid}>
-          <AnimatedStatCard 
-            label="Focus Hours" 
-            value={formatHours(stats.totalFocusTime)} 
-            icon={<Clock size={20} color={colors.accentSecondary} />} 
-            delay={300}
-          />
-          <AnimatedStatCard 
-            label="Sessions" 
-            value={stats.totalSessions.toString()} 
-            icon={<Zap size={20} color={colors.accent} />} 
-            delay={400}
-          />
+          <View style={styles.statWrapper}>
+            <AnimatedStatCard 
+              label="Focus Hours" 
+              value={formatHours(stats.totalFocusTime)} 
+              icon={<ClockIcon size={20} color={colors.accentSecondary} />} 
+              delay={300}
+            />
+          </View>
+          <View style={styles.statWrapper}>
+            <AnimatedStatCard 
+              label="Sessions" 
+              value={stats.totalSessions.toString()} 
+              icon={<ZapIcon size={20} color={colors.accent} />} 
+              delay={400}
+            />
+          </View>
         </View>
         
         <GlassCard style={styles.streakCard}>
           <View style={styles.streakHeader}>
-            <Flame size={24} color={colors.error} />
+            <FlameIcon size={24} color={colors.error} />
             <Text style={[styles.streakTitle, { color: colors.textPrimary }]}>{stats.streakDays} Day Streak</Text>
           </View>
           <Text style={[styles.streakSub, { color: colors.textSecondary }]}>
@@ -232,7 +241,7 @@ const AmbientItem = ({ icon, label, active = false, onPress }: { icon: React.Rea
 const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 10,
     alignItems: 'center',
   },
   timerSection: {
@@ -275,9 +284,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
   },
+  sectionHeaderCentered: {
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'center',
+  },
   ambientScroll: {
     width: '100%',
     marginBottom: 32,
+  },
+  ambientContent: {
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    flexGrow: 1,
   },
   ambientItem: {
     flexDirection: 'row',
@@ -296,6 +315,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     marginBottom: 20,
+    justifyContent: 'space-between',
+  },
+  statWrapper: {
+    flex: 1,
   },
   streakCard: {
     width: '100%',

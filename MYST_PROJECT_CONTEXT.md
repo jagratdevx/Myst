@@ -10,21 +10,20 @@
 - **Dashboard**: Aggregated overview of productivity, library stats, and finance.
 - **Onboarding**: 5-step personalized setup (Welcome, Profile, Subjects, Goals, Theme).
 - **Library (PDF System)**: 
-  - Subject-wise PDF organization and metadata tracking.
-  - In-app PDF viewer (WebView) on iOS.
-  - System-native document sharing fallback for Android.
-- **Focus**: Pomodoro-style timer with integrated high-quality offline ambient sounds (Calming Rain, Forest Birds, Cafe Ambience, Deep White Noise), breathing animations, and streak tracking.
-- **Planner**: Academic task manager with dynamic horizontal calendar, week-by-week navigation, and subject-specific filtering.
-- **Finance**: Local expense tracker with transaction CRUD operations, automated analytics, and monthly budget tracking.
-- **Analytics**: Data-driven insights using selected profile subjects, productivity trends, and focus distribution.
+  - Native, high-performance PDF viewing using `react-native-pdf`.
+  - Subject-wise organization and real-time page tracking (Page X of Y).
+  - Metadata tracking and subject-wise filtering.
+- **Focus**: Pomodoro-style timer with integrated high-quality offline ambient sounds (Rain, Forest, Cafe, Noise), breathing animations, and streak tracking.
+- **Planner**: Academic task manager with dynamic horizontal calendar, week-by-week navigation, and centered symmetrical header.
+- **Settings**: Comprehensive Profile editing, High Contrast accessibility mode, and Study Library management.
+- **UI Architecture**: Notch-safe global padding, centered typography, and keyboard-aware form layouts.
 
 ## 3. Architecture
 - **Frontend**: React Native (Expo) + TypeScript + NativeWind.
-- **Audio System**: Offline playback using `expo-av` with bundled assets.
-- **State Management**: Zustand for global feature states (Feature-specific stores like `useProfileStore`, `useSettingsStore`).
-- **Theme System**: Custom `ThemeProvider` with persistent Dark/Light mode preferences.
-- **Data Layer**: Modular services (`src/services`) and storage modules (`src/services/*Storage.ts`).
-- **Persistence**: 100% `AsyncStorage` with namespaced keys (e.g., `@myst_user_profile`, `@myst_settings`).
+- **PDF Engine**: Native rendering via `react-native-pdf`.
+- **Audio System**: Offline playback using `expo-av`.
+- **Theme System**: Custom `ThemeProvider` supporting Dark, Light, and High Contrast modes.
+- **Data Layer**: Modular services and AsyncStorage persistence.
 
 ## 4. Design System
 - **Style**: Minimal premium productivity UI, high background opacity (92-96%) for readability, floating rounded cards.

@@ -90,15 +90,18 @@ const styles = StyleSheet.create({
   header: {
     marginTop: 40,
     marginBottom: 40,
+    alignItems: 'center',
   },
   title: {
     fontSize: 28,
     fontWeight: '800',
     marginBottom: 12,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     lineHeight: 24,
+    textAlign: 'center',
   },
   grid: {
     flexDirection: 'row',

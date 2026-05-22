@@ -28,9 +28,24 @@ export const THEME_COLORS = {
     success: '#10B981',
     error: '#EF4444',
     warning: '#F59E0B',
+  },
+  highContrast: {
+    background: '#000000',
+    secondary: '#000000',
+    card: '#000000',
+    accent: '#00FFFF',
+    accentSecondary: '#FFFF00',
+    textPrimary: '#FFFFFF',
+    textSecondary: '#FFFFFF',
+    border: '#FFFFFF',
+    glass: 'rgba(255, 255, 255, 0.1)',
+    shadow: '#000000',
+    success: '#00FF00',
+    error: '#FF0000',
+    warning: '#FFFF00',
   }
 };
 
-export type ThemeType = 'dark' | 'light';
+export type ThemeType = 'dark' | 'light' | 'highContrast';
 
 export const COLORS = THEME_COLORS.dark; // Legacy support, will be replaced by dynamic colors

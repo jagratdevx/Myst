@@ -31,13 +31,14 @@ import {
   Info,
   Database,
   Palette,
-  Library
+  Library,
+  Eye
 } from 'lucide-react-native';
 import Animated, { FadeInUp, FadeInDown } from 'react-native-reanimated';
 
 export const SettingsScreen = () => {
   const navigation = useNavigation<any>();
-  const { colors, toggleTheme, isDark } = useTheme();
+  const { colors, toggleTheme, isDark, isHighContrast, toggleHighContrast } = useTheme();
   const { contentPadding } = useResponsive();
   const { fetchData, resetAllData, exportData } = useSettingsStore();
   const { profile, fetchProfile } = useProfileStore();
@@ -134,10 +135,17 @@ export const SettingsScreen = () => {
           <SettingsItem 
             icon={<Palette size={20} color={colors.accent} />} 
             label="Theme" 
-            value={isDark ? "Dark Mode" : "Light Mode"}
+            value={isHighContrast ? "High Contrast" : isDark ? "Dark Mode" : "Light Mode"}
             hasSwitch 
-            switchValue={isDark} 
+            switchValue={isDark && !isHighContrast} 
             onSwitchChange={toggleTheme}
+          />
+          <SettingsItem 
+            icon={<Eye size={20} color={colors.accentSecondary} />} 
+            label="High Contrast" 
+            hasSwitch 
+            switchValue={isHighContrast} 
+            onSwitchChange={toggleHighContrast}
           />
         </SettingsSection>
 
@@ -265,6 +273,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     marginBottom: 28,
     letterSpacing: -0.5,
+    textAlign: 'center',
   },
   profileCard: {
     flexDirection: 'row',

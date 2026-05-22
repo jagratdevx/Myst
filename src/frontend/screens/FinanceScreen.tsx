@@ -69,6 +69,7 @@ export const FinanceScreen = () => {
 
   const ListHeader = useMemo(() => (
     <View>
+      <Text style={[styles.title, { color: colors.textPrimary }]}>Finance Vault</Text>
       {/* Allowance Header */}
       <View style={styles.headerArea}>
         <GlassCard style={styles.allowanceCard}>
@@ -173,7 +174,14 @@ export const FinanceScreen = () => {
 
 const styles = StyleSheet.create({
   scrollContent: {
-    paddingTop: 20,
+    paddingTop: 10,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '800',
+    marginBottom: 24,
+    textAlign: 'center',
+    letterSpacing: -0.5,
   },
   headerArea: {
     marginBottom: 20,
