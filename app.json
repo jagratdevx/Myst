@@ -9,7 +9,10 @@
       }
     },
     "owner": "jagrat.devx",
+    "icon": "./src/assets/pics/logo.png",
     "splash": {
+      "image": "./src/assets/pics/splash_image.png",
+      "resizeMode": "contain",
       "backgroundColor": "#081120"
     },
     "android": {
