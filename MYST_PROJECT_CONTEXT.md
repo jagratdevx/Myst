@@ -7,8 +7,9 @@
 - **Brand Identity**: **Myst** (formerly NeuroNest).
 
 ## 2. Core Features
-- **Dashboard**: Aggregated overview of productivity, library stats, and finance.
-- **Onboarding**: 5-step personalized setup (Welcome, Profile, Subjects, Goals, Theme).
+- **Dashboard**: Aggregated overview of productivity, library stats, and INR budget health.
+- **Onboarding**: 6-step personalized setup (Welcome, Profile, Subjects, Goals, Monthly Student Budget, Theme).
+- **Finance**: Local INR expense tracking with monthly budget, optional savings goal, spending percentage, savings percentage, and remaining balance.
 - **Library (PDF System)**: 
   - Native, high-performance PDF viewing using `react-native-pdf`.
   - Subject-wise organization and real-time page tracking (Page X of Y).
@@ -24,12 +25,16 @@
 - **Audio System**: Offline playback using `expo-av`.
 - **Theme System**: Custom `ThemeProvider` supporting Dark, Light, and High Contrast modes.
 - **Data Layer**: Modular services and AsyncStorage persistence.
+- **Profile Budget Data**: `UserProfile` stores `monthlyBudget` and optional `savingsGoal` alongside name, grade, subjects, and goals.
+- **Currency System**: `src/utils/currency.ts` provides reusable INR formatting and currency input parsing. All finance UI uses `₹` formatting via this utility.
+- **Finance Analytics**: `financeAnalytics.getBudgetAnalytics()` derives remaining balance, expense totals, spending percentage, and savings percentage from transactions plus the profile budget.
 
 ## 4. Design System
 - **Style**: Minimal premium productivity UI, high background opacity (92-96%) for readability, floating rounded cards.
 - **Dark Mode**: Deep blue aesthetic (#081120) with subtle cyan accents.
 - **Light Mode**: Clean minimalist aesthetic (#F4F7FB) with soft neutral surfaces.
 - **UI Components**: Native shadows/elevation for depth (avoiding heavy blur), smooth Reanimated transitions, and Lucide icons.
+- **Finance UX**: Budget cards use compact typography, clear stat hierarchy, and low-cost native styling for low-end Android performance.
 
 ## 5. Technical Stack
 - **Expo SDK 51**
@@ -48,3 +53,4 @@
 - **Performance**: Use `FlatList` and item-level memoization for smooth 60fps UI.
 - **Responsiveness**: Use `useResponsive` hook for multi-device (Tablet/Phone) support.
 - **Navigation**: Custom `TabNavigator` with enhanced icon contrast and active tab indicators.
+- **Profile Integration**: Settings → Edit Profile supports budget and savings-goal edits. Saving refreshes profile, finance, and dashboard analytics immediately.

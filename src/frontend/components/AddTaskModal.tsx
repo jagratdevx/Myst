@@ -31,6 +31,7 @@ export const AddTaskModal = ({ visible, onClose }: AddTaskModalProps) => {
       subject,
       deadline,
       priority,
+      completed: false,
     });
 
     // Reset and close

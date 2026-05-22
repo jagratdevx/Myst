@@ -12,7 +12,7 @@ import {
 } from 'lucide-react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { useResponsive } from '../../hooks/useResponsive';
-import Animated, { FadeIn, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 // Screens
 import { DashboardScreen } from '../screens/DashboardScreen';

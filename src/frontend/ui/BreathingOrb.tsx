@@ -10,7 +10,11 @@ import Animated, {
 } from 'react-native-reanimated';
 import { COLORS } from '../../constants/theme';
 
-export const BreathingOrb = () => {
+interface BreathingOrbProps {
+  isBreathing?: boolean;
+}
+
+export const BreathingOrb = (_props: BreathingOrbProps) => {
   const scale = useSharedValue(1);
   const opacity = useSharedValue(0.3);
 
@@ -76,6 +80,10 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     backgroundColor: COLORS.accentCyan,
-    filter: 'blur(30px)',
+    shadowColor: COLORS.accentCyan,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 24,
+    elevation: 12,
   },
 });

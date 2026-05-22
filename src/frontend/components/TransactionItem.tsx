@@ -5,8 +5,16 @@ import { useTheme } from '../../hooks/useTheme';
 import { Edit2, Trash2 } from 'lucide-react-native';
 import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 import { hapticService } from '../../services/hapticService';
+import { Transaction } from '../../types';
+import { formatCurrency } from '../../utils/currency';
 
-...
+interface TransactionItemProps {
+  item: Transaction;
+  index: number;
+  getCategoryIcon: (category: string) => React.ReactNode;
+  onEdit?: (item: Transaction) => void;
+  onDelete?: (id: string) => void | Promise<void>;
+}
 
 export const TransactionItem = React.memo(({ item, index, getCategoryIcon, onEdit, onDelete }: TransactionItemProps) => {
   const { colors } = useTheme();
@@ -52,7 +60,7 @@ export const TransactionItem = React.memo(({ item, index, getCategoryIcon, onEdi
           </View>
           <View style={styles.transactionRight}>
             <Text style={[styles.transactionAmount, { color: item.type === 'expense' ? colors.error : colors.success }]}>
-              {item.type === 'expense' ? '-' : '+'}${item.amount.toFixed(2)}
+              {item.type === 'expense' ? '-' : '+'}{formatCurrency(item.amount)}
             </Text>
             <View style={styles.actionRow}>
               <TouchableOpacity onPress={() => onEdit?.(item)} style={styles.actionBtn}>

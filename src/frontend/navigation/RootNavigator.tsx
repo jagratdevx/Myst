@@ -8,6 +8,7 @@ import { OnboardingWelcome } from '../screens/Onboarding/OnboardingWelcome';
 import { OnboardingProfile } from '../screens/Onboarding/OnboardingProfile';
 import { OnboardingSubjects } from '../screens/Onboarding/OnboardingSubjects';
 import { OnboardingGoals } from '../screens/Onboarding/OnboardingGoals';
+import { OnboardingBudget } from '../screens/Onboarding/OnboardingBudget';
 import { OnboardingFinal } from '../screens/Onboarding/OnboardingFinal';
 import { useOnboardingStore } from '../../store/useOnboardingStore';
 import { ActivityIndicator, View } from 'react-native';
@@ -49,6 +50,7 @@ export const RootNavigator = () => {
             <Stack.Screen name="OnboardingProfile" component={OnboardingProfile} />
             <Stack.Screen name="OnboardingSubjects" component={OnboardingSubjects} />
             <Stack.Screen name="OnboardingGoals" component={OnboardingGoals} />
+            <Stack.Screen name="OnboardingBudget" component={OnboardingBudget} />
             <Stack.Screen name="OnboardingFinal" component={OnboardingFinal} />
           </>
         ) : (

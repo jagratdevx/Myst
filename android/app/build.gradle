@@ -111,11 +111,11 @@ android {
 
     namespace 'com.jagrat.devx.myst'
     defaultConfig {
-        applicationId 'com.jagrat.devx.myst'
+        applicationId 'com.jagrat.devx.myst.codex'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 7
+        versionName "1.0.5"
     }
     signingConfigs {
         debug {

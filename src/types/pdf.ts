@@ -22,5 +22,7 @@ export interface UserProfile {
   grade: string;
   subjects: string[];
   goals: string[];
+  monthlyBudget?: number;
+  savingsGoal?: number;
   onboardingCompleted: boolean;
 }

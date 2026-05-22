@@ -27,7 +27,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       style
     ]}>
       {theme === 'dark' ? (
-        <BlurView intensity={intensity || 20} tint="dark" style={StyleSheet.absoluteFill} />
+        <BlurView intensity={intensity || 16} tint="dark" style={StyleSheet.absoluteFill} />
       ) : null}
       {children}
     </View>
@@ -40,8 +40,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     overflow: 'hidden',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
+    shadowOpacity: 0.18,
     shadowRadius: 10,
-    elevation: 5,
+    elevation: 4,
   },
 });

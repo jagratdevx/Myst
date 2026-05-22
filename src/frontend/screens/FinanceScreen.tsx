@@ -15,14 +15,14 @@ import {
   PenTool, 
   ShoppingBag,
   Repeat,
-  ArrowUpRight
+  ArrowUpRight,
+  PiggyBank
 } from 'lucide-react-native';
 import { useFinanceStore } from '../../store/useFinanceStore';
 import { AddTransactionModal } from '../components/AddTransactionModal';
 import { TransactionItem } from '../components/TransactionItem';
 import { Transaction } from '../../types';
-
-const INITIAL_ALLOWANCE = 800;
+import { formatCurrency } from '../../utils/currency';
 
 export const FinanceScreen = () => {
   const { colors } = useTheme();
@@ -33,6 +33,9 @@ export const FinanceScreen = () => {
     totalExpenses, 
     balance, 
     savingsRate,
+    spendingPercentage,
+    monthlyBudget,
+    savingsGoal,
     spendingByCategory, 
     fetchTransactions,
     deleteTransaction
@@ -45,7 +48,7 @@ export const FinanceScreen = () => {
     fetchTransactions();
   }, [fetchTransactions]);
 
-  const progressPercent = useMemo(() => Math.max(0, (INITIAL_ALLOWANCE - totalExpenses) / INITIAL_ALLOWANCE), [totalExpenses]);
+  const progressPercent = useMemo(() => Math.max(0, 1 - (spendingPercentage / 100)), [spendingPercentage]);
 
   const getCategoryIcon = useCallback((category: string) => {
     switch(category) {
@@ -75,7 +78,7 @@ export const FinanceScreen = () => {
         <GlassCard style={styles.allowanceCard}>
           <View style={styles.allowanceInfo}>
             <Text style={[styles.allowanceLabel, { color: colors.textSecondary }]}>Remaining Balance</Text>
-            <Text style={[styles.allowanceValue, { color: colors.textPrimary }]}>${balance.toFixed(2)}</Text>
+            <Text style={[styles.allowanceValue, { color: colors.textPrimary }]}>{formatCurrency(balance)}</Text>
             <View style={styles.badgeRow}>
               <View style={[styles.trendBadge, { backgroundColor: balance >= 0 ? `${colors.success}20` : `${colors.error}20` }]}>
                 {balance >= 0 ? <ArrowUpRight size={14} color={colors.success} /> : <ArrowDownRight size={14} color={colors.error} />}
@@ -103,13 +106,28 @@ export const FinanceScreen = () => {
       <View style={styles.quickStats}>
         <GlassCard style={styles.statBox}>
           <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Monthly Spent</Text>
-          <Text style={[styles.statValue, { color: colors.textPrimary }]}>${totalExpenses.toFixed(2)}</Text>
+          <Text style={[styles.statValue, { color: colors.textPrimary }]}>{formatCurrency(totalExpenses)}</Text>
+          <Text style={[styles.statMeta, { color: colors.textSecondary }]}>{spendingPercentage.toFixed(0)}% of budget</Text>
         </GlassCard>
         <GlassCard style={styles.statBox}>
           <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Total Budget</Text>
-          <Text style={[styles.statValue, { color: colors.accentSecondary }]}>${INITIAL_ALLOWANCE}</Text>
+          <Text style={[styles.statValue, { color: colors.accentSecondary }]}>{formatCurrency(monthlyBudget)}</Text>
+          <Text style={[styles.statMeta, { color: colors.textSecondary }]}>Monthly allowance</Text>
         </GlassCard>
       </View>
+
+      <GlassCard style={styles.savingsCard}>
+        <View style={[styles.savingsIcon, { backgroundColor: `${colors.success}18` }]}>
+          <PiggyBank size={20} color={colors.success} />
+        </View>
+        <View style={styles.savingsText}>
+          <Text style={[styles.savingsTitle, { color: colors.textPrimary }]}>Savings Goal</Text>
+          <Text style={[styles.savingsSub, { color: colors.textSecondary }]}>
+            {savingsGoal > 0 ? `${formatCurrency(savingsGoal)} target this month` : 'Set a target in Edit Profile'}
+          </Text>
+        </View>
+        <Text style={[styles.savingsPercent, { color: colors.success }]}>{savingsRate.toFixed(0)}%</Text>
+      </GlassCard>
 
       {/* Spending Analytics */}
       <SectionHeader title="Category Breakdown" actionLabel="Details" />
@@ -131,7 +149,7 @@ export const FinanceScreen = () => {
       {/* Transaction History */}
       <SectionHeader title="Recent Transactions" actionLabel="See All" />
     </View>
-  ), [colors, balance, savingsRate, progressPercent, isTablet, totalExpenses, spendingByCategory]);
+  ), [colors, balance, savingsRate, progressPercent, isTablet, totalExpenses, spendingByCategory, monthlyBudget, savingsGoal, spendingPercentage]);
 
   const EmptyComponent = useMemo(() => (
     <View style={styles.emptyContainer}>
@@ -224,7 +242,7 @@ const styles = StyleSheet.create({
   quickStats: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    marginBottom: 12,
   },
   statBox: {
     width: '48%',
@@ -235,9 +253,44 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   statValue: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '800',
     marginTop: 4,
+  },
+  statMeta: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 4,
+  },
+  savingsCard: {
+    padding: 16,
+    marginBottom: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  savingsIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  savingsText: {
+    flex: 1,
+  },
+  savingsTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+  },
+  savingsSub: {
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  savingsPercent: {
+    fontSize: 18,
+    fontWeight: '900',
   },
   chartCard: {
     padding: 20,

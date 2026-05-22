@@ -14,8 +14,11 @@ export const analyticsService = {
     const completedTasks = tasks.filter(t => t.completed).length;
     const taskCompletionRate = tasks.length > 0 ? (completedTasks / tasks.length) * 100 : 0;
 
-    const balance = financeAnalytics.getBalance(transactions);
-    const monthlySpending = financeAnalytics.getTotalExpenses(transactions);
+    const budget = financeAnalytics.getBudgetAnalytics(
+      transactions,
+      profile?.monthlyBudget || 12000,
+      profile?.savingsGoal || 0
+    );
 
     // Subject Mastery logic - Use real selected subjects
     const subjects = profile?.subjects || [];
@@ -37,8 +40,12 @@ export const analyticsService = {
         subjectMastery,
       },
       finance: {
-        balance,
-        monthlySpending,
+        balance: budget.remainingBalance,
+        monthlySpending: budget.totalExpenses,
+        monthlyBudget: budget.monthlyBudget,
+        savingsGoal: budget.savingsGoal,
+        savingsPercentage: budget.savingsPercentage,
+        spendingPercentage: budget.spendingPercentage,
       }
     };
   },

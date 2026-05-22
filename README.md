@@ -87,26 +87,5 @@ Myst is **100% offline-first**. No data ever leaves your device. We do not use t
 
 ---
 
-## 🛠️ Build History & Troubleshooting
-
-During the development of Myst, we encountered several common React Native build challenges. If you run into these again, here are the documented solutions:
-
-### 1. `processReleaseResources` (AAPT/Resource Errors)
-*   **Cause**: Android's resource linker is extremely strict about filenames (no hyphens, no uppercase) and requires explicit resource definitions for splash screens.
-*   **Solution**: 
-    *   Ensure all asset filenames are lowercase with underscores (`_`).
-    *   Use `app.json` for splash configuration rather than manually creating XML drawable files.
-    *   If errors persist, run `npx expo prebuild --clean` to regenerate the Android directory.
-
-### 2. `createBundleReleaseJsAndAssets` (Babel/PostCSS Conflict)
-*   **Cause**: Incompatibility between NativeWind/PostCSS and the production Babel transpiler.
-*   **Solution**: Ensure `postcss` is on the latest version and the Babel config is using the updated NativeWind preset. Always perform a deep clean if bundling fails: `rm -rf .expo node_modules && npm install`.
-
-### 3. "Cannot find module react-native-worklets/plugin"
-*   **Cause**: Mismatched versions between `react-native-reanimated` and its worklet dependencies.
-*   **Solution**: Install `react-native-worklets-core` explicitly and ensure `reanimated` is at the stable version compatible with your Expo SDK.
-
-### 4. "Unable to resolve module ../Utilities/Platform"
-*   **Cause**: Corrupted `node_modules` or broken symlinks during native dependency installation.
-*   **Solution**: Perform a hard reset of dependencies: `rm -rf node_modules package-lock.json && npm install`.
-
+Designed with ❤️ for students.
+**Myst Student OS**

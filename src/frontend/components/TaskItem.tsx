@@ -5,8 +5,16 @@ import { useTheme } from '../../hooks/useTheme';
 import { CheckCircle2, Circle, Clock, AlertCircle } from 'lucide-react-native';
 import Animated, { FadeInUp, Layout } from 'react-native-reanimated';
 import { hapticService } from '../../services/hapticService';
+import { Task } from '../../types';
 
-...
+interface TaskItemProps {
+  task: Task;
+  index: number;
+  onToggle: (id: string) => void | Promise<void>;
+  onDelete: (id: string) => void | Promise<void>;
+  getSubjectColor: (subject: string) => string;
+  getPriorityColor: (priority: Task['priority']) => string;
+}
 
 export const TaskItem = React.memo(({ 
   task, 

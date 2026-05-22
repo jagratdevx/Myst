@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ActivityIndicator, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Dimensions } from 'react-native';
 import Pdf from 'react-native-pdf';
 import * as Sharing from 'expo-sharing';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -64,7 +64,6 @@ export const PDFViewerScreen = () => {
             console.log('PDF Error:', error);
           }}
           style={styles.pdf}
-          activityIndicator={<ActivityIndicator color={colors.accent} size="large" />}
         />
       </View>
     </View>

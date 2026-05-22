@@ -26,9 +26,14 @@ import {
   BookOpen,
   Target,
   User as UserIcon,
-  GraduationCap
+  GraduationCap,
+  Wallet,
+  PiggyBank
 } from 'lucide-react-native';
 import Animated, { FadeInRight } from 'react-native-reanimated';
+import { parseCurrencyInput } from '../../utils/currency';
+import { useFinanceStore } from '../../store/useFinanceStore';
+import { useAnalyticsStore } from '../../store/useAnalyticsStore';
 
 const SUBJECT_OPTIONS = [
   'Physics', 'Chemistry', 'Mathematics', 'Biology', 
@@ -40,9 +45,13 @@ export const EditProfileScreen = () => {
   const { colors } = useTheme();
   const { contentPadding } = useResponsive();
   const { profile, updateProfile, fetchProfile } = useProfileStore();
+  const refreshFinance = useFinanceStore(state => state.fetchTransactions);
+  const refreshAnalytics = useAnalyticsStore(state => state.fetchData);
 
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
+  const [monthlyBudget, setMonthlyBudget] = useState('');
+  const [savingsGoal, setSavingsGoal] = useState('');
   const [subjects, setSubjects] = useState<string[]>([]);
   const [goals, setGoals] = useState<string[]>([]);
   const [newGoal, setNewGoal] = useState('');
@@ -55,6 +64,8 @@ export const EditProfileScreen = () => {
     if (profile) {
       setName(profile.name);
       setGrade(profile.grade);
+      setMonthlyBudget(String(profile.monthlyBudget || 12000));
+      setSavingsGoal(profile.savingsGoal ? String(profile.savingsGoal) : '');
       setSubjects(profile.subjects || []);
       setGoals(profile.goals || []);
     }
@@ -87,9 +98,14 @@ export const EditProfileScreen = () => {
     await updateProfile({
       name: name.trim(),
       grade: grade.trim(),
+      monthlyBudget: parseCurrencyInput(monthlyBudget),
+      savingsGoal: parseCurrencyInput(savingsGoal),
       subjects,
       goals
     });
+    await fetchProfile();
+    await refreshFinance();
+    await refreshAnalytics();
     Alert.alert('Success', 'Profile updated successfully', [
       { text: 'OK', onPress: () => navigation.goBack() }
     ]);
@@ -133,6 +149,28 @@ export const EditProfileScreen = () => {
               onChangeText={setGrade}
               placeholder="e.g. 11th Grade"
               icon={<GraduationCap size={18} color={colors.textSecondary} />}
+            />
+          </GlassCard>
+
+          {/* Budget */}
+          <SectionHeader title="Budget Setup" icon={<Wallet size={20} color={colors.accent} />} />
+          <GlassCard style={styles.sectionCard}>
+            <GlassInput
+              label="Monthly Budget"
+              value={monthlyBudget}
+              onChangeText={setMonthlyBudget}
+              placeholder="12000"
+              keyboardType="numeric"
+              icon={<Wallet size={18} color={colors.textSecondary} />}
+            />
+            <View style={{ height: 16 }} />
+            <GlassInput
+              label="Savings Goal"
+              value={savingsGoal}
+              onChangeText={setSavingsGoal}
+              placeholder="2000"
+              keyboardType="numeric"
+              icon={<PiggyBank size={18} color={colors.textSecondary} />}
             />
           </GlassCard>
 

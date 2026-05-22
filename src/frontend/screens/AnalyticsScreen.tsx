@@ -24,6 +24,7 @@ import {
   Coins
 } from 'lucide-react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
+import { formatCurrency } from '../../utils/currency';
 
 export const AnalyticsScreen = () => {
   const { colors } = useTheme();
@@ -37,7 +38,7 @@ export const AnalyticsScreen = () => {
 
   const data = useMemo(() => aggregateData || {
     productivity: { totalFocusTime: 0, focusSessions: 0, streak: 0, taskCompletionRate: 0, completedTasks: 0, totalTasks: 0, subjectMastery: [] },
-    finance: { balance: 0, monthlySpending: 0 }
+    finance: { balance: 0, monthlySpending: 0, monthlyBudget: 12000, savingsGoal: 0, savingsPercentage: 0, spendingPercentage: 0 }
   }, [aggregateData]);
 
   const formatHours = (seconds: number) => {
@@ -101,6 +102,24 @@ export const AnalyticsScreen = () => {
             value={`${pdfs.length}`}
             sub="Study Materials"
             delay={400}
+          />
+        </View>
+
+        <SectionHeader title="Budget Health" />
+        <View style={styles.statsGrid}>
+          <AnalyticsStatBox
+            icon={<Coins size={20} color={colors.success} />}
+            label="Balance"
+            value={formatCurrency(data.finance.balance)}
+            sub={`${data.finance.spendingPercentage.toFixed(0)}% spent`}
+            delay={500}
+          />
+          <AnalyticsStatBox
+            icon={<Target size={20} color={colors.accentSecondary} />}
+            label="Savings"
+            value={`${data.finance.savingsPercentage.toFixed(0)}%`}
+            sub={data.finance.savingsGoal > 0 ? `${formatCurrency(data.finance.savingsGoal)} goal` : 'No goal set'}
+            delay={600}
           />
         </View>
 

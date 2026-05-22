@@ -15,34 +15,36 @@ import { StatItem } from '../components/StatItem';
 import { 
   Zap, 
   Clock, 
-  TrendingUp, 
   Flame,
   FileText,
   ChevronRight
 } from 'lucide-react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { formatCurrency } from '../../utils/currency';
 
 export const DashboardScreen = () => {
   const navigation = useNavigation<any>();
   const { colors } = useTheme();
   const { isTablet, contentPadding } = useResponsive();
   const { aggregateData, loading, fetchData } = useAnalyticsStore();
-  const { profile } = useOnboardingStore();
+  const { profile, fetchProfile } = useOnboardingStore();
   const { pdfs, fetchPDFs } = usePDFStore();
 
   useEffect(() => {
     fetchData();
+    fetchProfile();
     fetchPDFs();
     const unsubscribe = navigation.addListener('focus', () => {
       fetchData();
+      fetchProfile();
       fetchPDFs();
     });
     return unsubscribe;
-  }, [navigation, fetchData, fetchPDFs]);
+  }, [navigation, fetchData, fetchProfile, fetchPDFs]);
 
   const data = useMemo(() => aggregateData || {
     productivity: { totalFocusTime: 0, focusSessions: 0, streak: 0, taskCompletionRate: 0, completedTasks: 0, totalTasks: 0 },
-    finance: { balance: 0, monthlySpending: 0 }
+    finance: { balance: 0, monthlySpending: 0, monthlyBudget: 12000, savingsGoal: 0, savingsPercentage: 0, spendingPercentage: 0 }
   }, [aggregateData]);
 
   const formatHours = (seconds: number) => {
@@ -163,7 +165,10 @@ export const DashboardScreen = () => {
           <View style={styles.financeRow}>
             <View>
               <Text style={[styles.financeLabel, { color: colors.textSecondary }]}>Remaining Balance</Text>
-              <Text style={[styles.financeValue, { color: colors.textPrimary }]}>${data.finance.balance.toFixed(2)}</Text>
+              <Text style={[styles.financeValue, { color: colors.textPrimary }]}>{formatCurrency(data.finance.balance)}</Text>
+              <Text style={[styles.financeMeta, { color: colors.textSecondary }]}>
+                {data.finance.spendingPercentage.toFixed(0)}% spent | {data.finance.savingsPercentage.toFixed(0)}% savings
+              </Text>
             </View>
             <View style={[styles.financeTrend, { backgroundColor: `${colors.accent}20` }]}>
               <Text style={[styles.trendText, { color: colors.accent }]}>Local Vault</Text>
@@ -278,6 +283,11 @@ const styles = StyleSheet.create({
   financeValue: {
     fontSize: 28,
     fontWeight: '800',
+    marginTop: 4,
+  },
+  financeMeta: {
+    fontSize: 12,
+    fontWeight: '600',
     marginTop: 4,
   },
   financeTrend: {

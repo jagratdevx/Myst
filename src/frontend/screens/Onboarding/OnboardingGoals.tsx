@@ -30,7 +30,7 @@ export const OnboardingGoals = () => {
   const handleNext = async () => {
     if (selected.length > 0) {
       await updateProfile({ goals: selected });
-      navigation.navigate('OnboardingFinal');
+      navigation.navigate('OnboardingBudget');
     }
   };
 

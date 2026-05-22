@@ -104,7 +104,7 @@ export const AddTransactionModal = ({ visible, onClose, editingTransaction }: Ad
         />
 
         <GlassInput 
-          label="Amount ($)"
+          label="Amount (₹)"
           placeholder="0.00"
           value={amount}
           onChangeText={setAmount}

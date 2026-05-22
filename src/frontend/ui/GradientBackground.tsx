@@ -15,11 +15,11 @@ export const GradientBackground: React.FC<GradientBackgroundProps> = ({ children
       {theme === 'dark' ? (
         <>
           <LinearGradient
-            colors={['rgba(94, 235, 255, 0.05)', 'transparent']}
+            colors={['rgba(94, 235, 255, 0.06)', 'transparent']}
             style={[styles.glowOrb, { top: -100, left: -50, width: 300, height: 300 }]}
           />
           <LinearGradient
-            colors={['rgba(155, 135, 245, 0.05)', 'transparent']}
+            colors={['rgba(155, 135, 245, 0.06)', 'transparent']}
             style={[styles.glowOrb, { bottom: -50, right: -50, width: 250, height: 250 }]}
           />
         </>

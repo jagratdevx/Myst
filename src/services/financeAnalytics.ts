@@ -1,5 +1,15 @@
 import { Transaction } from '../types';
 
+export interface BudgetAnalytics {
+  monthlyBudget: number;
+  savingsGoal: number;
+  totalIncome: number;
+  totalExpenses: number;
+  remainingBalance: number;
+  spendingPercentage: number;
+  savingsPercentage: number;
+}
+
 export const financeAnalytics = {
   getSpendingByCategory: (transactions: Transaction[]) => {
     const expenses = transactions.filter(t => t.type === 'expense');
@@ -37,17 +47,39 @@ export const financeAnalytics = {
     return income - expenses;
   },
 
-  getSavingsRate: (transactions: Transaction[]) => {
-    const totalIncome = transactions
-      .filter(t => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0);
-    const totalExpenses = transactions
-      .filter(t => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0);
-    
-    if (totalIncome === 0) return 0;
-    const savings = totalIncome - totalExpenses;
-    return Math.max(0, (savings / totalIncome) * 100);
+  getBudgetAnalytics: (
+    transactions: Transaction[],
+    monthlyBudget = 12000,
+    savingsGoal = 0
+  ): BudgetAnalytics => {
+    const totalIncome = financeAnalytics.getTotalIncome(transactions);
+    const totalExpenses = financeAnalytics.getTotalExpenses(transactions);
+    const availableFunds = monthlyBudget + totalIncome;
+    const remainingBalance = availableFunds - totalExpenses;
+    const spendingPercentage = monthlyBudget > 0
+      ? Math.min(100, (totalExpenses / monthlyBudget) * 100)
+      : 0;
+    const savingsPercentage = savingsGoal > 0
+      ? Math.min(100, Math.max(0, (remainingBalance / savingsGoal) * 100))
+      : Math.max(0, monthlyBudget > 0 ? (remainingBalance / monthlyBudget) * 100 : 0);
+
+    return {
+      monthlyBudget,
+      savingsGoal,
+      totalIncome,
+      totalExpenses,
+      remainingBalance,
+      spendingPercentage,
+      savingsPercentage,
+    };
+  },
+
+  getSavingsRate: (
+    transactions: Transaction[],
+    monthlyBudget = 12000,
+    savingsGoal = 0
+  ) => {
+    return financeAnalytics.getBudgetAnalytics(transactions, monthlyBudget, savingsGoal).savingsPercentage;
   },
 
   getWeeklyTrends: (transactions: Transaction[]) => {
