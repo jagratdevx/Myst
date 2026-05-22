@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo } from '
 import { useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { THEME_COLORS, ThemeType } from '../constants/theme';
+import { hapticService } from '../services/hapticService';
 
 const THEME_STORAGE_KEY = '@myst_theme_preference';
 
@@ -55,11 +56,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const toggleTheme = async () => {
+    hapticService.selection();
     const newTheme = theme === 'light' ? 'dark' : 'light';
     await setTheme(newTheme);
   };
 
   const toggleHighContrast = async () => {
+    hapticService.medium();
     const newTheme = theme === 'highContrast' ? (systemColorScheme === 'light' ? 'light' : 'dark') : 'highContrast';
     await setTheme(newTheme);
   };

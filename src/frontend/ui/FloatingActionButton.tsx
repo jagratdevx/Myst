@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, ViewStyle, StyleProp } from 'react-native';
 import { Plus } from 'lucide-react-native';
 import { useTheme } from '../../hooks/useTheme';
+import { hapticService } from '../../services/hapticService';
 import Animated, { 
   useAnimatedStyle, 
   useSharedValue, 
@@ -29,6 +30,7 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   }));
 
   const handlePress = () => {
+    hapticService.medium();
     scale.value = withSequence(
       withTiming(0.8, { duration: 100 }),
       withSpring(1, { damping: 12, stiffness: 200 })
@@ -69,8 +71,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 10,
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
   },
 });

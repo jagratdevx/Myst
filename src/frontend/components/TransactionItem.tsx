@@ -3,35 +3,42 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { GlassCard } from '../ui/GlassCard';
 import { useTheme } from '../../hooks/useTheme';
 import { Edit2, Trash2 } from 'lucide-react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
+import { hapticService } from '../../services/hapticService';
 
-interface TransactionItemProps {
-  item: any;
-  index: number;
-  getCategoryIcon: (category: string) => React.ReactNode;
-  onEdit?: (item: any) => void;
-  onDelete?: (id: string) => void;
-}
+...
 
 export const TransactionItem = React.memo(({ item, index, getCategoryIcon, onEdit, onDelete }: TransactionItemProps) => {
   const { colors } = useTheme();
 
   const handleDelete = () => {
+    hapticService.selection();
     Alert.alert(
       "Delete Transaction",
       "Are you sure you want to remove this record?",
       [
         { text: "Cancel", style: "cancel" },
-        { text: "Delete", style: "destructive", onPress: () => onDelete?.(item.id) }
+        { text: "Delete", style: "destructive", onPress: () => {
+          hapticService.medium();
+          onDelete?.(item.id);
+        }}
       ]
     );
   };
 
+  const handleEdit = () => {
+    hapticService.light();
+    onEdit?.(item);
+  };
+
   return (
-    <Animated.View entering={FadeInDown.delay(index * 50)}>
+    <Animated.View 
+      entering={FadeInDown.delay(index * 50)}
+      layout={Layout.springify().damping(15)}
+    >
       <TouchableOpacity 
         activeOpacity={0.7} 
-        onPress={() => onEdit?.(item)}
+        onPress={handleEdit}
       >
         <GlassCard style={styles.transactionCard}>
           <View style={styles.transactionLeft}>

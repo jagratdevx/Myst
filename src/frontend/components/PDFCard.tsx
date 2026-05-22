@@ -4,7 +4,8 @@ import { GlassCard } from '../ui/GlassCard';
 import { useTheme } from '../../hooks/useTheme';
 import { PDFDocument } from '../../types/pdf';
 import { FileText, Star, Clock, Trash2, MoreVertical } from 'lucide-react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
+import { hapticService } from '../../services/hapticService';
 
 interface PDFCardProps {
   pdf: PDFDocument;
@@ -16,6 +17,21 @@ interface PDFCardProps {
 
 export const PDFCard = React.memo(({ pdf, index, onPress, onFavorite, onDelete }: PDFCardProps) => {
   const { colors } = useTheme();
+
+  const handlePress = () => {
+    hapticService.light();
+    onPress(pdf);
+  };
+
+  const handleFavorite = () => {
+    hapticService.selection();
+    onFavorite(pdf.id);
+  };
+
+  const handleDelete = () => {
+    hapticService.medium();
+    onDelete(pdf.id);
+  };
 
   const formatSize = (bytes?: number) => {
     if (!bytes) return '0 KB';
@@ -29,8 +45,11 @@ export const PDFCard = React.memo(({ pdf, index, onPress, onFavorite, onDelete }
   };
 
   return (
-    <Animated.View entering={FadeInDown.delay(index * 50)}>
-      <TouchableOpacity activeOpacity={0.7} onPress={() => onPress(pdf)}>
+    <Animated.View 
+      entering={FadeInDown.delay(index * 50)}
+      layout={Layout.springify().damping(15)}
+    >
+      <TouchableOpacity activeOpacity={0.7} onPress={handlePress}>
         <GlassCard style={styles.card}>
           <View style={styles.content}>
             <View style={[styles.iconBox, { backgroundColor: colors.glass }]}>
@@ -49,14 +68,14 @@ export const PDFCard = React.memo(({ pdf, index, onPress, onFavorite, onDelete }
             </View>
 
             <View style={styles.actions}>
-              <TouchableOpacity onPress={() => onFavorite(pdf.id)} style={styles.actionBtn}>
+              <TouchableOpacity onPress={handleFavorite} style={styles.actionBtn}>
                 <Star 
                   size={18} 
                   color={pdf.isFavorite ? colors.warning : colors.textSecondary} 
                   fill={pdf.isFavorite ? colors.warning : 'transparent'} 
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => onDelete(pdf.id)} style={styles.actionBtn}>
+              <TouchableOpacity onPress={handleDelete} style={styles.actionBtn}>
                 <Trash2 size={18} color={colors.textSecondary} />
               </TouchableOpacity>
             </View>

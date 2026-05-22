@@ -3,16 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { GlassCard } from '../ui/GlassCard';
 import { useTheme } from '../../hooks/useTheme';
 import { CheckCircle2, Circle, Clock, AlertCircle } from 'lucide-react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import Animated, { FadeInUp, Layout } from 'react-native-reanimated';
+import { hapticService } from '../../services/hapticService';
 
-interface TaskItemProps {
-  task: any;
-  index: number;
-  onToggle: (id: string) => void;
-  onDelete: (id: string) => void;
-  getSubjectColor: (subject: string) => string;
-  getPriorityColor: (priority: string) => string;
-}
+...
 
 export const TaskItem = React.memo(({ 
   task, 
@@ -24,18 +18,30 @@ export const TaskItem = React.memo(({
 }: TaskItemProps) => {
   const { colors } = useTheme();
 
+  const handleToggle = () => {
+    hapticService.light();
+    onToggle(task.id);
+  };
+
   const handleDelete = () => {
+    hapticService.selection();
     Alert.alert("Delete Task", "Delete this task?", [
       { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: () => onDelete(task.id) }
+      { text: "Delete", style: "destructive", onPress: () => {
+        hapticService.medium();
+        onDelete(task.id);
+      }}
     ]);
   };
 
   return (
-    <Animated.View entering={FadeInUp.delay(index * 50)}>
+    <Animated.View 
+      entering={FadeInUp.delay(index * 50)} 
+      layout={Layout.springify().damping(15)}
+    >
       <TouchableOpacity 
         activeOpacity={0.7} 
-        onPress={() => onToggle(task.id)} 
+        onPress={handleToggle} 
         onLongPress={handleDelete}
       >
         <GlassCard style={[styles.taskCard, task.completed && styles.taskCompleted]}>
