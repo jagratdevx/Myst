@@ -5,10 +5,10 @@
     "version": "1.0.0",
     "extra": {
       "eas": {
-        "projectId": "7bfdfae6-64ec-49d4-af60-817feba1f76e"
+        "projectId": "cf951323-3216-4189-bd37-8cb94fd50225"
       }
     },
-    "owner": "jagrat.devx",
+    "owner": "jagratagrawals-organization",
     "icon": "./src/assets/pics/logo.png",
     "splash": {
       "image": "./src/assets/pics/splash_image.png",

@@ -183,6 +183,11 @@ export const SettingsScreen = () => {
             value="v2.1.0-premium"
           />
           <SettingsItem 
+            icon={<User size={20} color={colors.textSecondary} />} 
+            label="Architects" 
+            value="Jagrat & Nilabh"
+          />
+          <SettingsItem 
             icon={<Database size={20} color={colors.textSecondary} />} 
             label="Storage" 
             value="Offline-First"
