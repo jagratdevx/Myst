@@ -10,6 +10,14 @@ interface MarkdownTextProps {
   lineHeight?: number;
 }
 
+function hasMath(text: string): boolean {
+  return /(?<!\$)\$(?!\$)(?:[^$\n])+?\$(?!\$)/.test(text) ||
+    /\$\$[\s\S]*?\$\$/.test(text) ||
+    /\\\([\s\S]*?\\\)/.test(text) ||
+    /\\\[[\s\S]*?\\\]/.test(text) ||
+    /\\begin\{[\w*]+\}[\s\S]*?\\end\{[\w*]+\}/.test(text);
+}
+
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')
@@ -19,42 +27,55 @@ function escapeHtml(text: string): string {
     .replace(/'/g, '&#039;');
 }
 
-const buildMathHtml = (rawContent: string, isDark: boolean): string => {
-  const content = escapeHtml(rawContent);
-  return `
-<!DOCTYPE html>
+function buildMathHtml(rawContent: string, isDark: boolean): string {
+  const encoded = btoa(unescape(encodeURIComponent(escapeHtml(rawContent))));
+  return String.raw`<!DOCTYPE html>
 <html><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js">
+<\/script>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:${isDark ? '#1a1a2e' : '#ffffff'};padding:12px;color:${isDark ? '#e0e0e0' : '#1a1a2e'};font-size:15px;line-height:1.6;font-family:-apple-system,Helvetica,sans-serif;overflow-x:hidden;word-wrap:break-word}
-  strong{font-weight:800}
-  em{font-style:italic}
-  code{background:rgba(128,128,128,0.15);padding:1px 4px;border-radius:4px;font-family:Menlo,monospace;font-size:13px}
-  pre{background:${isDark ? '#0d0d1a' : '#f0f0f5'};padding:12px;border-radius:8px;margin:8px 0;overflow-x:auto}
-  pre code{background:none;padding:0;font-size:13px}
-  .math-block{display:block;text-align:center;margin:8px 0;padding:4px 0}
-</style></head><body><div id="c">${content}</div>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:` + (isDark ? '#1a1a2e' : '#ffffff') + String.raw`;
+  padding:12px;
+  color:` + (isDark ? '#e0e0e0' : '#1a1a2e') + String.raw`;
+  font-size:15px;line-height:1.6;
+  font-family:-apple-system,Helvetica,sans-serif;
+  overflow-x:hidden;word-wrap:break-word
+}
+strong{font-weight:800}
+em{font-style:italic}
+code{background:rgba(128,128,128,0.15);padding:1px 4px;border-radius:4px;font-family:Menlo,monospace;font-size:13px}
+pre{background:` + (isDark ? '#0d0d1a' : '#f0f0f5') + String.raw`;padding:12px;border-radius:8px;margin:8px 0;overflow-x:auto}
+pre code{background:none;padding:0;font-size:13px}
+.katex-block{display:block;text-align:center;margin:8px 0;padding:4px 0}
+.katex-inline{display:inline}
+</style>
+</head><body>
+<div id="c"></div>
 <script>
-function r(e,d){try{return katex.renderToString(e,{throwOnError:false,displayMode:d,output:'html'})}catch(x){return e}}
-var c=document.getElementById('c'),m=c.innerHTML;
-m=m.replace(/\`\`\`([\s\S]*?)\`\`\`/g,'<pre><code>$1</code></pre>');
-m=m.replace(/\$\$([\s\S]*?)\$\$/g,function(_,p){return '<div class="math-block">'+r(p,true)+'</div>'});
-m=m.replace(/\$([^$\n]+?)\$/g,function(_,p){return r(p,false)});
-m=m.replace(/\`([^\`]+)\`/g,'<code>$1</code>');
-m=m.replace(/\*{2}([^*]+)\*{2}/g,'<strong>$1</strong>');
-m=m.replace(/\*([^*]+)\*/g,'<em>$1</em>');
-c.innerHTML=m;
-setTimeout(function(){window.ReactNativeWebView.postMessage(String(document.body.scrollHeight))},100);
+var d=document;
+var r=function(e,m){try{return katex.renderToString(e,{throwOnError:false,displayMode:m,output:'html'})}catch(x){return e}};
+var c=d.getElementById('c');
+try{
+  var t=atob('` + encoded + String.raw`');
+  t=t.replace(/\x60\x60\x60([\s\S]*?)\x60\x60\x60/g,'<pre><code>$1</code></pre>');
+  t=t.replace(/\$\$([\s\S]*?)\$\$/g,function(a,p){return '<div class="katex-block">'+r(p,true)+'</div>'});
+  t=t.replace(/\\\[([\s\S]*?)\\\]/g,function(a,p){return '<div class="katex-block">'+r(p,true)+'</div>'});
+  t=t.replace(/\\begin\{([\w*]+)\}([\s\S]*?)\\end\{\1\}/g,function(a,env,body){return '<div class="katex-block">'+r('\\begin{'+env+'}'+body+'\\end{'+env+'}',true)+'</div>'});
+  t=t.replace(/(?<!\$)\$(?!\$)((?:[^\$\n])+?)\$(?!\$)/g,function(a,p){return r(p,false)});
+  t=t.replace(/\\\(([\s\S]*?)\\\)/g,function(a,p){return r(p,false)});
+  t=t.replace(/\x60([^\x60]+)\x60/g,'<code>$1</code>');
+  t=t.replace(/\*{2}([^*]+)\*{2}/g,'<strong>$1</strong>');
+  t=t.replace(/\*([^*]+)\*/g,'<em>$1</em>');
+  c.innerHTML=t;
+}catch(e){c.textContent='Error rendering content'}
+setTimeout(function(){window.ReactNativeWebView.postMessage(String(document.body.scrollHeight))},150);
 <\/script>
 </body></html>`;
-};
-
-function hasMath(text: string): boolean {
-  return /\$\$[\s\S]*?\$\$/.test(text) || /(?<!\$)\$(?!\$)(?:[^$\n])+?\$(?!\$)/.test(text);
 }
 
 interface SimpleSegment {

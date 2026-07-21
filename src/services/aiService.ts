@@ -1,10 +1,20 @@
+import Constants from 'expo-constants';
 import { ChatMessage } from '../types/chat';
 
-const API_KEY = '';
+
 const BASE_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const DEFAULT_MODEL = 'llama-3.3-70b-versatile';
 const REQUEST_TIMEOUT_MS = 30_000;
 const MAX_CONTEXT_MESSAGES = 16;
+
+function getApiKey(): string {
+  const key = Constants.expoConfig?.extra?.groqApiKey as string | undefined;
+  if (!key) {
+    console.warn('GROQ_API_KEY not found in app config. Set it in .env');
+    return '';
+  }
+  return key;
+}
 
 export const aiService = {
   sendMessage: async (messages: ChatMessage[], signal?: AbortSignal): Promise<string> => {
@@ -19,7 +29,6 @@ export const aiService = {
         content: msg.content,
       }));
 
-      // Add a system prompt if not present
       if (!formattedMessages.some(msg => msg.role === 'system')) {
         formattedMessages.unshift({
           role: 'system',
@@ -31,7 +40,7 @@ export const aiService = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`,
+          'Authorization': `Bearer ${getApiKey()}`,
         },
         body: JSON.stringify({
           model: DEFAULT_MODEL,
