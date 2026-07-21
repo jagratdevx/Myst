@@ -22,7 +22,7 @@ import { FocusScreen } from '../screens/FocusScreen';
 import { PlannerScreen } from '../screens/PlannerScreen';
 import { PDFLibraryScreen } from '../screens/PDFLibraryScreen';
 import { FinanceScreen } from '../screens/FinanceScreen';
-import { AnalyticsScreen } from '../screens/AnalyticsScreen';
+import { TestScoreScreen } from '../screens/TestScoreScreen';
 import { ChatbotScreen } from '../screens/ChatbotScreen';
 
 const Tab = createBottomTabNavigator();
@@ -68,7 +68,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
             case 'Chat': return <MessageSquare {...props} />;
             case 'Library': return <Library {...props} />;
             case 'Finance': return <Wallet {...props} />;
-            case 'Analytics': return <BarChart3 {...props} />;
+            case 'TestScore': return <BarChart3 {...props} />;
             case 'Settings': return <Settings {...props} />;
             default: return null;
           }
@@ -119,7 +119,7 @@ export const TabNavigator = () => {
       <Tab.Screen name="Chat" component={ChatbotScreen} />
       <Tab.Screen name="Library" component={PDFLibraryScreen} />
       <Tab.Screen name="Finance" component={FinanceScreen} />
-      <Tab.Screen name="Analytics" component={AnalyticsScreen} />
+      <Tab.Screen name="TestScore" component={TestScoreScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
