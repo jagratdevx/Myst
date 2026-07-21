@@ -182,7 +182,7 @@ export const SettingsScreen = () => {
           <SettingsItem 
             icon={<Info size={20} color={colors.textSecondary} />} 
             label="App Version" 
-            value={`v${Constants.expoConfig?.version || '2.1.0'}`}
+            value={`v${Constants.expoConfig?.version || '3.1'}-premium`}
           />
           <SettingsItem 
             icon={<User size={20} color={colors.textSecondary} />} 

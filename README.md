@@ -1,10 +1,19 @@
 # Myst — The Premium Student Operating System
 
-**Myst** is a high-performance, offline-first productivity ecosystem designed specifically for the modern student. It consolidates academic organization, deep work tools, financial tracking, and performance analytics into a single, minimalist, premium interface.
-
-![Myst Banner](https://via.placeholder.com/1000x400/081120/5EEBFF?text=MYST+STUDENT+OS)
+**Myst** is a high-performance, offline-first productivity ecosystem designed specifically for the modern student. It consolidates academic organization, deep work tools, financial tracking, test score analytics, and an AI-powered assistant into a single, minimalist, premium interface.
 
 ## 🚀 Key Features
+
+### 🧪 Test Score Tracker
+*   **Subject-Wise Totals**: Track total marks achieved vs total marks per subject.
+*   **Overall Performance**: Aggregate score across all tests with percentage.
+*   **Quick Entry**: Add scores with subject suggestions from your profile.
+*   **Delete & Review**: Remove entries and view recent activity.
+
+### 🤖 Myst AI Assistant (Groq-Powered)
+*   **LLM-Powered Chat**: Ask study questions, get explanations, and receive academic guidance.
+*   **LaTeX Rendering**: Mathematical expressions render beautifully via KaTeX with horizontal scroll for long equations.
+*   **Markdown Formatting**: Bold, italic, code blocks — all rendered natively.
 
 ### 📚 Study Library (Native PDF System)
 *   **Integrated Reading**: High-performance native PDF viewing using `react-native-pdf`.
@@ -24,11 +33,6 @@
 *   **Student Budgeting**: Track allowances and expenses with automated category breakdown.
 *   **Savings Insights**: Real-time balance calculation and savings rate percentages.
 
-### 📊 Academic Insights
-*   **Subject Mastery**: A visual heatmap mapping your progress across all your selected subjects.
-*   **Focus Distribution**: Weekly analytics showing your peak productivity hours.
-*   **Efficiency Rating**: Data-driven feedback on your task completion habits.
-
 ---
 
 ## ✨ Premium Experience & UI
@@ -38,6 +42,7 @@
 *   **High Contrast Mode**: Dedicated accessibility theme for maximum legibility.
 *   **Hardware Optimized**: Built to run at a fluid 60fps even on budget Android devices.
 *   **Notch-Safe**: Global layout intelligence that automatically adjusts for camera notches and Dynamic Islands.
+*   **Glassmorphism Design**: Frosted glass cards, glow buttons, and gradient backgrounds throughout.
 
 ---
 
@@ -49,8 +54,10 @@
 *   **Styling**: [NativeWind](https://www.nativewind.dev/) (Tailwind CSS)
 *   **Animations**: [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)
 *   **Icons**: [Lucide React Native](https://lucide.dev/)
+*   **Math Rendering**: [KaTeX](https://katex.org/) via WebView
+*   **AI Backend**: [Groq](https://groq.com/) (llama-3.3-70b-versatile)
 *   **Storage**: [AsyncStorage](https://react-native-async-storage.github.io/async-storage/) (100% Local/Private)
-*   **Native Modules**: Expo AV, React Native PDF, Expo Haptics, Expo Sharing.
+*   **Native Modules**: Expo AV, React Native PDF, Expo Haptics, Expo Sharing, React Native WebView.
 
 ---
 
@@ -58,7 +65,8 @@
 
 ### Prerequisites
 *   Node.js (LTS)
-*   Expo Go (for basic preview) or **Development Build** (for full native features)
+*   Expo CLI
+*   Xcode (for iOS builds)
 
 ### Installation
 1.  Clone the repository:
@@ -70,22 +78,32 @@
     ```bash
     npm install
     ```
-3.  Start the development server:
+3.  Create a `.env` file with your Groq API key:
+    ```bash
+    echo "GROQ_API_KEY=your_key_here" > .env
+    ```
+4.  Start the development server:
     ```bash
     npx expo start
     ```
 
-### Building for Android (APK)
+### Building for iOS (Release)
 ```bash
-eas build -p android --profile preview
+cd ios
+xcodebuild -workspace Myst.xcworkspace -scheme Myst -sdk iphonesimulator -configuration Release -derivedDataPath /tmp/MystBuild build
+xcrun simctl install <device-udid> /tmp/MystBuild/Build/Products/Release-iphonesimulator/Myst.app
+xcrun simctl launch <device-udid> com.jagrat.devx.myst
 ```
 
 ---
 
 ## 🔒 Privacy
-Myst is **100% offline-first**. No data ever leaves your device. We do not use trackers, cloud syncing, or third-party analytics. Your academic life belongs to you.
+Myst is **100% offline-first**. No data ever leaves your device unless you explicitly use the AI Chat feature (which sends messages to Groq's API). We do not use trackers, cloud syncing, or third-party analytics. Your academic life belongs to you.
 
 ---
 
-Designed with ❤️ for students.
-**Myst Student OS**
+## 👥 Credits
+
+Built with ❤️ by **Jagrat** and **Nilabh**.
+
+**Myst Student OS** — v3.1-premium
