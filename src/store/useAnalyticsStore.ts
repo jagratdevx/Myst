@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import { analyticsService } from '../services/analyticsService';
+import { analyticsService, AggregateData } from '../services/analyticsService';
 
 interface AnalyticsState {
-  aggregateData: any;
+  aggregateData: AggregateData | null;
   focusDistribution: number[];
   loading: boolean;
   fetchData: () => Promise<void>;
@@ -14,6 +14,7 @@ export const useAnalyticsStore = create<AnalyticsState>((set) => ({
   loading: false,
 
   fetchData: async () => {
+    if (useAnalyticsStore.getState().loading) return;
     set({ loading: true });
     try {
       const aggregateData = await analyticsService.getAggregateData();

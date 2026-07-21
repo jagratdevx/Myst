@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform, Dimensions } from 'react-native';
 import Pdf from 'react-native-pdf';
 import * as Sharing from 'expo-sharing';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useTheme } from '../../hooks/useTheme';
 import { usePDFStore } from '../../store/usePDFStore';
+import { PDFDocument } from '../../types/pdf';
 import { ChevronLeft, Share2, FileText } from 'lucide-react-native';
 
 export const PDFViewerScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute<any>();
+  const route = useRoute<RouteProp<{ PDFViewer: { pdf: PDFDocument } }, 'PDFViewer'>>();
   const { colors } = useTheme();
   const { markAsOpened } = usePDFStore();
   const { pdf } = route.params;

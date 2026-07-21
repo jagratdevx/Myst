@@ -34,7 +34,7 @@ export const AnalyticsScreen = () => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, []);
 
   const data = useMemo(() => aggregateData || {
     productivity: { totalFocusTime: 0, focusSessions: 0, streak: 0, taskCompletionRate: 0, completedTasks: 0, totalTasks: 0, subjectMastery: [] },
@@ -128,7 +128,7 @@ export const AnalyticsScreen = () => {
         <GlassCard style={styles.heatmapCard}>
           <View style={styles.heatmapGrid}>
             {(data.productivity.subjectMastery || []).length > 0 ? (
-              data.productivity.subjectMastery.map((item: any) => (
+              data.productivity.subjectMastery.map((item: { label: string; progress: number }) => (
                 <HeatmapItem key={item.label} label={item.label} progress={item.progress} />
               ))
             ) : (
@@ -143,7 +143,7 @@ export const AnalyticsScreen = () => {
   );
 };
 
-const AnalyticsStatBox = React.memo(({ icon, label, value, sub, delay = 300 }: any) => {
+const AnalyticsStatBox = React.memo(({ icon, label, value, sub, delay = 300 }: { icon: React.ReactNode; label: string; value: string; sub: string; delay?: number }) => {
   const { colors } = useTheme();
   return (
     <Animated.View entering={FadeInUp.delay(delay)} style={styles.statBoxWrapper}>
@@ -157,7 +157,7 @@ const AnalyticsStatBox = React.memo(({ icon, label, value, sub, delay = 300 }: a
   );
 });
 
-const HeatmapItem = React.memo(({ label, progress }: any) => {
+const HeatmapItem = React.memo(({ label, progress }: { label: string; progress: number }) => {
   const { colors } = useTheme();
   
   const getSubjectIcon = (label: string) => {

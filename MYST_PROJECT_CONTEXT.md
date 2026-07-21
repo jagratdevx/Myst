@@ -47,7 +47,11 @@
 - **react-native-webview** (PDF Viewing)
 - **expo-sharing** (Android PDF Fallback)
 
-## 6. Development Guidelines
+## 6. Known Issues & Recent Fixes
+- **Infinite Re-mount Loop (Fixed)**: `RootNavigator` used early return for loading state, causing `NavigationContainer` to unmount/remount on every profile fetch cycle. Fixed by rendering `LoadingScreen` as a stack screen inside `NavigationContainer` (keeps container always mounted). Initial `loading` state changed to `true` in `useProfileStore`.
+- **iOS Deployment Target (Xcode beta)**: iOS 27 SDK requires min deployment target 15.0. Updated `ios.deploymentTarget` in `Podfile.properties.json` to `15.0`, updated main `project.pbxproj`, and patched Pods project file.
+
+## 7. Development Guidelines
 - **Modularity**: Maintain strict separation between UI components and backend services.
 - **Offline First**: Zero dependency on external APIs; all data is local.
 - **Performance**: Use `FlatList` and item-level memoization for smooth 60fps UI.

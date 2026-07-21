@@ -48,7 +48,8 @@ export const SettingsScreen = () => {
     fetchData();
     fetchPDFs();
     fetchProfile();
-  }, [fetchData, fetchPDFs, fetchProfile]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleReset = useCallback(() => {
     Alert.alert(

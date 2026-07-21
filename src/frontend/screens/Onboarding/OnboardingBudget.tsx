@@ -17,13 +17,13 @@ import { GlassCard } from '../../ui/GlassCard';
 import { GlassInput } from '../../ui/GlassInput';
 import { GlowButton } from '../../ui/GlowButton';
 import { useTheme } from '../../../hooks/useTheme';
-import { useOnboardingStore } from '../../../store/useOnboardingStore';
+import { useProfileStore } from '../../../store/useProfileStore';
 import { parseCurrencyInput } from '../../../utils/currency';
 
 export const OnboardingBudget = () => {
   const navigation = useNavigation<any>();
   const { colors } = useTheme();
-  const { profile, updateProfile } = useOnboardingStore();
+  const { profile, updateProfile } = useProfileStore();
   const [monthlyBudget, setMonthlyBudget] = useState(String(profile?.monthlyBudget || '12000'));
   const [savingsGoal, setSavingsGoal] = useState(profile?.savingsGoal ? String(profile.savingsGoal) : '');
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { AnimatedScreenWrapper } from '../ui/AnimatedScreenWrapper';
 import { BreathingOrb } from '../ui/BreathingOrb';
@@ -8,6 +8,7 @@ import { SectionHeader } from '../ui/SectionHeader';
 import { AnimatedStatCard } from '../ui/AnimatedStatCard';
 import { useTheme } from '../../hooks/useTheme';
 import { useFocusStore } from '../../store/useFocusStore';
+import { useSettingsStore } from '../../store/useSettingsStore';
 import { 
   RotateCcw as RotateIcon, 
   Coffee as CoffeeIcon, 
@@ -31,16 +32,33 @@ const AMBIENT_SOUNDS = [
 export const FocusScreen = () => {
   const { colors } = useTheme();
   const { stats, saveSession, fetchData } = useFocusStore();
+  const { settings } = useSettingsStore();
+
+  const workSeconds = settings.pomodoroWorkTime * 60;
+  const breakSeconds = settings.pomodoroBreakTime * 60;
+
   const [isActive, setIsActive] = useState(false);
-  const [seconds, setSeconds] = useState(1500); // 25 minutes
-  const [initialSeconds] = useState(1500);
+  const [seconds, setSeconds] = useState(workSeconds);
   const [mode, setFocusMode] = useState<'study' | 'break'>('study');
+
+  const modeRef = useRef(mode);
+  const initialSecondsRef = useRef(seconds);
+  const isActiveRef = useRef(isActive);
   
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [activeSoundId, setActiveSoundId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    modeRef.current = mode;
+    initialSecondsRef.current = seconds;
+    isActiveRef.current = isActive;
+  });
+
+  useEffect(() => {
     return () => {
       if (sound) {
         sound.unloadAsync();
@@ -50,7 +68,6 @@ export const FocusScreen = () => {
 
   const toggleAmbientSound = async (soundId: string) => {
     if (activeSoundId === soundId) {
-      // Stop current
       if (sound) {
         await sound.stopAsync();
         await sound.unloadAsync();
@@ -60,7 +77,6 @@ export const FocusScreen = () => {
       return;
     }
 
-    // Stop and unload existing sound if any
     if (sound) {
       await sound.stopAsync();
       await sound.unloadAsync();
@@ -84,25 +100,25 @@ export const FocusScreen = () => {
         setSeconds((s) => s - 1);
       }, 1000);
     } else if (seconds === 0 && isActive) {
-      handleSessionComplete();
+      setIsActive(false);
+      const completedMode = modeRef.current;
+      const elapsed = initialSecondsRef.current;
+      if (elapsed > 10) {
+        saveSession(elapsed, completedMode).then(() => {
+          Alert.alert(
+            completedMode === 'study' ? 'Focus Complete!' : 'Break Over!',
+            completedMode === 'study' ? 'Great job staying focused.' : 'Ready to get back to work?',
+            [{ text: 'OK' }]
+          );
+        });
+      }
+      const nextMode = completedMode === 'study' ? 'break' : 'study';
+      const nextSeconds = nextMode === 'study' ? workSeconds : breakSeconds;
+      setFocusMode(nextMode);
+      setSeconds(nextSeconds);
     }
     return () => clearInterval(interval);
-  }, [isActive, seconds]);
-
-  const handleSessionComplete = async () => {
-    setIsActive(false);
-    const duration = initialSeconds - seconds;
-    if (duration > 10) { // Only save if more than 10 seconds
-      await saveSession(duration, mode);
-      Alert.alert(
-        mode === 'study' ? 'Focus Complete!' : 'Break Over!',
-        mode === 'study' ? 'Great job staying focused.' : 'Ready to get back to work?',
-        [{ text: 'OK' }]
-      );
-    }
-    setSeconds(mode === 'study' ? 300 : 1500); // Toggle to break or study
-    setFocusMode(mode === 'study' ? 'break' : 'study');
-  };
+  }, [isActive, seconds, saveSession, workSeconds, breakSeconds]);
 
   const formatTime = (sec: number) => {
     const mins = Math.floor(sec / 60);
@@ -110,10 +126,18 @@ export const FocusScreen = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const toggleTimer = () => setIsActive(!isActive);
+  const toggleTimer = () => {
+    setIsActive(!isActive);
+    if (!isActive) {
+      initialSecondsRef.current = seconds;
+    }
+  };
+
   const resetTimer = () => {
     setIsActive(false);
-    setSeconds(mode === 'study' ? 1500 : 300);
+    const resetSeconds = modeRef.current === 'study' ? workSeconds : breakSeconds;
+    setSeconds(resetSeconds);
+    initialSecondsRef.current = resetSeconds;
   };
 
   const formatHours = (seconds: number) => {
@@ -150,8 +174,11 @@ export const FocusScreen = () => {
             style={[styles.iconButton, { backgroundColor: colors.glass, borderColor: colors.border }]} 
             onPress={() => {
               if (!isActive) {
-                setFocusMode(mode === 'study' ? 'break' : 'study');
-                setSeconds(mode === 'study' ? 300 : 1500);
+                const next = modeRef.current === 'study' ? 'break' : 'study';
+                const nextSecs = next === 'study' ? workSeconds : breakSeconds;
+                setFocusMode(next);
+                setSeconds(nextSecs);
+                initialSecondsRef.current = nextSecs;
               }
             }}
           >

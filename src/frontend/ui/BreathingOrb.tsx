@@ -8,13 +8,14 @@ import Animated, {
   withSequence,
   Easing 
 } from 'react-native-reanimated';
-import { COLORS } from '../../constants/theme';
+import { useTheme } from '../../hooks/useTheme';
 
 interface BreathingOrbProps {
   isBreathing?: boolean;
 }
 
 export const BreathingOrb = (_props: BreathingOrbProps) => {
+  const { colors } = useTheme();
   const scale = useSharedValue(1);
   const opacity = useSharedValue(0.3);
 
@@ -50,8 +51,8 @@ export const BreathingOrb = (_props: BreathingOrbProps) => {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.glow, glowStyle]} />
-      <Animated.View style={[styles.orb, animatedStyle]} />
+      <Animated.View style={[styles.glow, glowStyle, { backgroundColor: colors.accent, shadowColor: colors.accent }]} />
+      <Animated.View style={[styles.orb, animatedStyle, { backgroundColor: colors.accentSecondary, shadowColor: colors.accentSecondary }]} />
     </View>
   );
 };
@@ -67,8 +68,8 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: COLORS.accentPurple,
-    shadowColor: COLORS.accentPurple,
+    backgroundColor: '#9B87F5',
+    shadowColor: '#9B87F5',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 20,
@@ -79,8 +80,8 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: COLORS.accentCyan,
-    shadowColor: COLORS.accentCyan,
+    backgroundColor: '#5EEBFF',
+    shadowColor: '#5EEBFF',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.4,
     shadowRadius: 24,

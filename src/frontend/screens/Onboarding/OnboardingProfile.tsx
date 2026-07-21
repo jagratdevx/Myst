@@ -14,13 +14,13 @@ import { AnimatedScreenWrapper } from '../../ui/AnimatedScreenWrapper';
 import { GlowButton } from '../../ui/GlowButton';
 import { GlassInput } from '../../ui/GlassInput';
 import { useTheme } from '../../../hooks/useTheme';
-import { useOnboardingStore } from '../../../store/useOnboardingStore';
+import { useProfileStore } from '../../../store/useProfileStore';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 export const OnboardingProfile = () => {
   const navigation = useNavigation<any>();
   const { colors } = useTheme();
-  const { updateProfile } = useOnboardingStore();
+  const { updateProfile } = useProfileStore();
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
 

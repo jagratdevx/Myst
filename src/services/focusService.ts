@@ -27,14 +27,15 @@ export const focusService = {
       stats.totalFocusTime += duration;
       stats.totalSessions += 1;
       
-      const today = new Date().toISOString().split('T')[0];
+      const d = new Date();
+      const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       if (stats.lastSessionDate !== today) {
         // Simple streak logic: if last session was yesterday, increment. If today, stay same. Else reset to 1.
         if (stats.lastSessionDate) {
           const lastDate = new Date(stats.lastSessionDate);
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          const yesterdayStr = yesterday.toISOString().split('T')[0];
+          const y = new Date();
+          y.setDate(y.getDate() - 1);
+          const yesterdayStr = `${y.getFullYear()}-${String(y.getMonth() + 1).padStart(2, '0')}-${String(y.getDate()).padStart(2, '0')}`;
           
           if (stats.lastSessionDate === yesterdayStr) {
             stats.streakDays += 1;

@@ -15,6 +15,7 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
     "expo": "~51.0.0",
     "expo-av": "~14.0.7",
     "expo-blur": "~13.0.2",
@@ -22,6 +23,7 @@
     "expo-document-picker": "~12.0.2",
     "expo-haptics": "~13.0.1",
     "expo-linear-gradient": "~13.0.2",
+    "expo-secure-store": "~13.0.2",
     "expo-sharing": "~12.0.1",
     "expo-status-bar": "~1.12.1",
     "lucide-react-native": "^0.378.0",
@@ -44,6 +46,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/crypto-js": "^4.2.2",
     "@types/react": "~18.2.45",
     "autoprefixer": "^10.4.14",
     "metro-react-native-babel-preset": "^0.77.0",

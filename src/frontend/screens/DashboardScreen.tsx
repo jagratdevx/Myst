@@ -9,7 +9,7 @@ import { GlassCard } from '../ui/GlassCard';
 import { useTheme } from '../../hooks/useTheme';
 import { useResponsive } from '../../hooks/useResponsive';
 import { useAnalyticsStore } from '../../store/useAnalyticsStore';
-import { useOnboardingStore } from '../../store/useOnboardingStore';
+import { useProfileStore } from '../../store/useProfileStore';
 import { usePDFStore } from '../../store/usePDFStore';
 import { StatItem } from '../components/StatItem';
 import { 
@@ -27,7 +27,7 @@ export const DashboardScreen = () => {
   const { colors } = useTheme();
   const { isTablet, contentPadding } = useResponsive();
   const { aggregateData, loading, fetchData } = useAnalyticsStore();
-  const { profile, fetchProfile } = useOnboardingStore();
+  const { profile, fetchProfile } = useProfileStore();
   const { pdfs, fetchPDFs } = usePDFStore();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export const DashboardScreen = () => {
       fetchPDFs();
     });
     return unsubscribe;
-  }, [navigation, fetchData, fetchProfile, fetchPDFs]);
+  }, [navigation]);
 
   const data = useMemo(() => aggregateData || {
     productivity: { totalFocusTime: 0, focusSessions: 0, streak: 0, taskCompletionRate: 0, completedTasks: 0, totalTasks: 0 },

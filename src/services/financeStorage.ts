@@ -14,8 +14,9 @@ export const financeStorage = {
 
   getTransactions: async (): Promise<Transaction[]> => {
     try {
-      const transactionsJson = await AsyncStorage.getItem(FINANCE_TRANSACTIONS_KEY);
-      return transactionsJson ? JSON.parse(transactionsJson) : [];
+      const data = await AsyncStorage.getItem(FINANCE_TRANSACTIONS_KEY);
+      if (!data) return [];
+      return JSON.parse(data) as Transaction[];
     } catch (error) {
       console.error('Error getting transactions:', error);
       return [];

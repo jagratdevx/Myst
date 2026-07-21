@@ -58,7 +58,7 @@ export const EditProfileScreen = () => {
 
   useEffect(() => {
     fetchProfile();
-  }, [fetchProfile]);
+  }, []);
 
   useEffect(() => {
     if (profile) {

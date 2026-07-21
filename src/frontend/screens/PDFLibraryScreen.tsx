@@ -8,7 +8,7 @@ import { FloatingActionButton } from '../ui/FloatingActionButton';
 import { useTheme } from '../../hooks/useTheme';
 import { useResponsive } from '../../hooks/useResponsive';
 import { usePDFStore } from '../../store/usePDFStore';
-import { useOnboardingStore } from '../../store/useOnboardingStore';
+import { useProfileStore } from '../../store/useProfileStore';
 import { PDFCard } from '../components/PDFCard';
 import { Search, Plus, Filter, FileText } from 'lucide-react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -18,7 +18,7 @@ export const PDFLibraryScreen = () => {
   const { colors } = useTheme();
   const { isTablet, contentPadding } = useResponsive();
   const { pdfs, loading, fetchPDFs, importPDF, deletePDF, toggleFavorite } = usePDFStore();
-  const { profile } = useOnboardingStore();
+  const { profile } = useProfileStore();
   
   const [search, setSearch] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('All');

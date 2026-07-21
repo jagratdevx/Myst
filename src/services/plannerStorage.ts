@@ -14,8 +14,9 @@ export const plannerStorage = {
 
   getTasks: async (): Promise<Task[]> => {
     try {
-      const tasksJson = await AsyncStorage.getItem(PLANNER_TASKS_KEY);
-      return tasksJson ? JSON.parse(tasksJson) : [];
+      const data = await AsyncStorage.getItem(PLANNER_TASKS_KEY);
+      if (!data) return [];
+      return JSON.parse(data) as Task[];
     } catch (error) {
       console.error('Error getting tasks:', error);
       return [];

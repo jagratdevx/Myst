@@ -5,7 +5,7 @@ import { AnimatedScreenWrapper } from '../../ui/AnimatedScreenWrapper';
 import { GlowButton } from '../../ui/GlowButton';
 import { GlassCard } from '../../ui/GlassCard';
 import { useTheme } from '../../../hooks/useTheme';
-import { useOnboardingStore } from '../../../store/useOnboardingStore';
+import { useProfileStore } from '../../../store/useProfileStore';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const GOAL_OPTIONS = [
@@ -16,7 +16,7 @@ const GOAL_OPTIONS = [
 export const OnboardingGoals = () => {
   const navigation = useNavigation<any>();
   const { colors } = useTheme();
-  const { profile, updateProfile } = useOnboardingStore();
+  const { profile, updateProfile } = useProfileStore();
   const [selected, setSelected] = useState<string[]>(profile?.goals || []);
 
   const toggleGoal = (goal: string) => {

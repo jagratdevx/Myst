@@ -1,21 +1,23 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { AnimatedScreenWrapper } from '../../ui/AnimatedScreenWrapper';
 import { GlowButton } from '../../ui/GlowButton';
 import { GlassCard } from '../../ui/GlassCard';
 import { useTheme } from '../../../hooks/useTheme';
-import { useOnboardingStore } from '../../../store/useOnboardingStore';
+import { useProfileStore } from '../../../store/useProfileStore';
 import Animated, { FadeInDown, ZoomIn } from 'react-native-reanimated';
 import { Moon, Sun, CheckCircle } from 'lucide-react-native';
 
 export const OnboardingFinal = () => {
   const { colors, theme, setTheme } = useTheme();
-  const { completeOnboarding } = useOnboardingStore();
+  const { completeOnboarding } = useProfileStore();
+  const navigation = useNavigation<any>();
 
   const handleFinish = async () => {
     await completeOnboarding();
-    // RootNavigator will re-render and show the main app
+    navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
   };
 
   return (

@@ -7,11 +7,12 @@ interface ProfileState {
   loading: boolean;
   fetchProfile: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
+  completeOnboarding: () => Promise<void>;
 }
 
 export const useProfileStore = create<ProfileState>((set, get) => ({
   profile: null,
-  loading: false,
+  loading: true,
 
   fetchProfile: async () => {
     set({ loading: true });
@@ -30,6 +31,18 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
       set({ profile: updatedProfile });
     } catch (error) {
       console.error('Failed to update profile:', error);
+    }
+  },
+
+  completeOnboarding: async () => {
+    const profile = get().profile;
+    if (profile) {
+      try {
+        const updated = await profileService.updateProfile({ onboardingCompleted: true });
+        set({ profile: updated });
+      } catch (error) {
+        console.error('Error completing onboarding:', error);
+      }
     }
   }
 }));

@@ -7,7 +7,8 @@ export const pdfStorage = {
   getPDFs: async (): Promise<PDFDocument[]> => {
     try {
       const data = await AsyncStorage.getItem(PDF_METADATA_KEY);
-      return data ? JSON.parse(data) : [];
+      if (!data) return [];
+      return JSON.parse(data) as PDFDocument[];
     } catch (error) {
       console.error('Failed to get PDFs from storage', error);
       return [];

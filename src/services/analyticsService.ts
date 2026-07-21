@@ -4,8 +4,28 @@ import { financeService } from './financeService';
 import { financeAnalytics } from './financeAnalytics';
 import { profileService } from './profileService';
 
+export interface AggregateData {
+  productivity: {
+    totalFocusTime: number;
+    focusSessions: number;
+    streak: number;
+    taskCompletionRate: number;
+    completedTasks: number;
+    totalTasks: number;
+    subjectMastery: { label: string; progress: number }[];
+  };
+  finance: {
+    balance: number;
+    monthlySpending: number;
+    monthlyBudget: number;
+    savingsGoal: number;
+    savingsPercentage: number;
+    spendingPercentage: number;
+  };
+}
+
 export const analyticsService = {
-  getAggregateData: async () => {
+  getAggregateData: async (): Promise<AggregateData> => {
     const focusStats = await focusService.getStats();
     const tasks = await plannerService.getTasks();
     const transactions = await financeService.getTransactions();

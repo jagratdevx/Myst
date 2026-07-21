@@ -24,7 +24,9 @@ export const profileService = {
   getProfile: async (): Promise<UserProfile | null> => {
     try {
       const data = await AsyncStorage.getItem(PROFILE_KEY);
-      return data ? normalizeProfile(JSON.parse(data)) : null;
+      if (!data) return null;
+      const parsed = JSON.parse(data) as UserProfile;
+      return parsed ? normalizeProfile(parsed) : null;
     } catch (error) {
       console.error('Error fetching profile:', error);
       return null;

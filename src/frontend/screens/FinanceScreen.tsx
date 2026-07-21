@@ -46,7 +46,7 @@ export const FinanceScreen = () => {
 
   useEffect(() => {
     fetchTransactions();
-  }, [fetchTransactions]);
+  }, []);
 
   const progressPercent = useMemo(() => Math.max(0, 1 - (spendingPercentage / 100)), [spendingPercentage]);
 

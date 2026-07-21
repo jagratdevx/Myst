@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import { NativeWindStyleSheet } from "nativewind";
+
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -7,9 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RootNavigator } from './src/frontend/navigation/RootNavigator';
 import { ThemeProvider, useTheme } from './src/hooks/useTheme';
 
-NativeWindStyleSheet.setOutput({
-  default: "native",
-});
+
 
 const AppContent = () => {
   const { theme } = useTheme();
