@@ -4,7 +4,7 @@ module.exports = {
   expo: {
     name: 'Myst',
     slug: 'myst',
-    version: '1.0.0',
+    version: '2.1.0',
     extra: {
       eas: {
         projectId: 'cf951323-3216-4189-bd37-8cb94fd50225',

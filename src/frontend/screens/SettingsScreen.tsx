@@ -11,6 +11,7 @@ import {
   Linking
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Constants from 'expo-constants';
 import { AnimatedScreenWrapper } from '../ui/AnimatedScreenWrapper';
 import { GlassCard } from '../ui/GlassCard';
 import { useTheme } from '../../hooks/useTheme';
@@ -181,7 +182,7 @@ export const SettingsScreen = () => {
           <SettingsItem 
             icon={<Info size={20} color={colors.textSecondary} />} 
             label="App Version" 
-            value="v2.1.0-premium"
+            value={`v${Constants.expoConfig?.version || '2.1.0'}`}
           />
           <SettingsItem 
             icon={<User size={20} color={colors.textSecondary} />} 
