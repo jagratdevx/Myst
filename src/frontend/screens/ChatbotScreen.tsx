@@ -95,7 +95,7 @@ export const ChatbotScreen = () => {
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0}
       >
         {/* Glass Header */}
         <GlassCard style={styles.headerCard}>
@@ -301,8 +301,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputWrapper: {
-    padding: 16,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 16,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: Platform.OS === 'ios' ? 100 : 80,
   },
   inputCard: {
     flexDirection: 'row',

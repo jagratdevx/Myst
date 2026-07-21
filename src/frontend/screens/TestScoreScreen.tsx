@@ -317,11 +317,12 @@ const styles = StyleSheet.create({
   showAllRow: { alignItems: 'center', padding: 12, marginBottom: 8 },
   showAllText: { fontSize: 14, fontWeight: '600' },
   fab: {
-    position: 'absolute', bottom: 24, right: 20,
+    position: 'absolute', bottom: 110, right: 20,
     width: 56, height: 56, borderRadius: 28,
     justifyContent: 'center', alignItems: 'center',
     shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3, shadowRadius: 8, elevation: 6,
+    zIndex: 999,
   },
   modalOverlay: {
     flex: 1, justifyContent: 'flex-end',
