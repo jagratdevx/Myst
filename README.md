@@ -78,7 +78,7 @@
     ```bash
     npm install
     ```
-3.  Create a `.env` file with your Groq API key:
+3.  Create a `.env` file with your Groq API key (key is embedded into the app binary at build time via `app.config.js`):
     ```bash
     echo "GROQ_API_KEY=your_key_here" > .env
     ```
