@@ -5,6 +5,10 @@ module.exports = {
     name: 'Myst',
     slug: 'myst',
     version: '3.1.0',
+    runtimeVersion: '1.0.0',
+    updates: {
+      url: 'https://u.expo.dev/cf951323-3216-4189-bd37-8cb94fd50225',
+    },
     extra: {
       eas: {
         projectId: 'cf951323-3216-4189-bd37-8cb94fd50225',
