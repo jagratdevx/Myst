@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,21 +10,35 @@ import {
   Platform,
   ActivityIndicator,
   Keyboard,
+  Alert,
 } from 'react-native';
 import { AnimatedScreenWrapper } from '../ui/AnimatedScreenWrapper';
 import { GlassCard } from '../ui/GlassCard';
 import { useTheme } from '../../hooks/useTheme';
 import { useChatStore } from '../../store/useChatStore';
+import { usePlannerStore } from '../../store/usePlannerStore';
 import { ChatMessage } from '../../types/chat';
-import { Send, Trash2, Bot, Sparkles } from 'lucide-react-native';
+import { Send, Trash2, Bot, Sparkles, CalendarPlus } from 'lucide-react-native';
 import Animated, { SlideInRight, SlideInLeft } from 'react-native-reanimated';
 import { MarkdownText } from '../ui/MarkdownText';
+
+const TASK_REGEX = /📋\s*TASK:\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(High|Medium|Low)\s*\|\s*(\d{4}-\d{2}-\d{2})/g;
+
+function parseTasks(content: string): { title: string; subject: string; priority: 'High' | 'Medium' | 'Low'; deadline: string }[] {
+  const tasks: any[] = [];
+  let match;
+  while ((match = TASK_REGEX.exec(content)) !== null) {
+    tasks.push({ title: match[1].trim(), subject: match[2].trim(), priority: match[3] as any, deadline: match[4] });
+  }
+  return tasks;
+}
 
 export const ChatbotScreen = () => {
   const { colors, isDark } = useTheme();
   const { messages, loading, hydrated, error, loadMessages, sendMessage, retryLastMessage, clearChat } = useChatStore();
   const [inputText, setInputText] = useState('');
   const flatListRef = useRef<FlatList>(null);
+  const addTask = usePlannerStore(s => s.addTask);
 
   useEffect(() => {
     loadMessages();
@@ -47,11 +61,28 @@ export const ChatbotScreen = () => {
     await sendMessage(text);
   };
 
+  const handleAddTasks = useCallback(async (content: string) => {
+    const tasks = parseTasks(content);
+    if (tasks.length === 0) return;
+    Alert.alert('Add to Planner', `Add ${tasks.length} task${tasks.length > 1 ? 's' : ''} to your planner?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Add All', onPress: async () => {
+          for (const t of tasks) {
+            await addTask({ title: t.title, subject: t.subject, priority: t.priority, deadline: t.deadline, completed: false });
+          }
+          Alert.alert('Done', `${tasks.length} task${tasks.length > 1 ? 's' : ''} added to your planner!`);
+        }
+      },
+    ]);
+  }, [addTask]);
+
   const renderMessageItem = ({ item, index }: { item: ChatMessage; index: number }) => {
     const isUser = item.role === 'user';
     const enteringAnimation = isUser 
       ? SlideInRight.duration(300) 
       : SlideInLeft.duration(300);
+    const tasks = !isUser ? parseTasks(item.content) : [];
 
     return (
       <Animated.View 
@@ -85,6 +116,16 @@ export const ChatbotScreen = () => {
               {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </Text>
           </GlassCard>
+          {tasks.length > 0 && (
+            <TouchableOpacity
+              style={[styles.addTasksBtn, { backgroundColor: `${colors.accent}20`, borderColor: colors.accent }]}
+              onPress={() => handleAddTasks(item.content)}
+              activeOpacity={0.7}
+            >
+              <CalendarPlus size={16} color={colors.accent} />
+              <Text style={[styles.addTasksText, { color: colors.accent }]}>Add {tasks.length} task{tasks.length > 1 ? 's' : ''} to Planner</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </Animated.View>
     );
@@ -327,5 +368,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 8,
+  },
+  addTasksBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginTop: 8,
+    gap: 6,
+    alignSelf: 'flex-start',
+  },
+  addTasksText: {
+    fontSize: 13,
+    fontWeight: '700',
   },
 });

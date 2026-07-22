@@ -68,7 +68,7 @@ export const DashboardScreen = () => {
     navigation.navigate('Chat');
     setTimeout(() => {
       const { sendMessage } = require('../../store/useChatStore').useChatStore.getState();
-      sendMessage('Create a personalized study plan for me based on my current tasks, test scores, and focus stats.');
+      sendMessage('Create a personalized study plan for me based on my current tasks, test scores, and focus stats. Include specific tasks I can add to my planner using the TASK format.');
     }, 500);
   }, [navigation]);
 

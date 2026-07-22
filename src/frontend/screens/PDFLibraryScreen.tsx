@@ -10,7 +10,8 @@ import { useResponsive } from '../../hooks/useResponsive';
 import { usePDFStore } from '../../store/usePDFStore';
 import { useProfileStore } from '../../store/useProfileStore';
 import { PDFCard } from '../components/PDFCard';
-import { Search, Plus, Filter, FileText } from 'lucide-react-native';
+import { Search, Plus, FileText } from 'lucide-react-native';
+import { useFlashcardStore } from '../../store/useFlashcardStore';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 export const PDFLibraryScreen = () => {
@@ -19,6 +20,7 @@ export const PDFLibraryScreen = () => {
   const { isTablet, contentPadding } = useResponsive();
   const { pdfs, loading, fetchPDFs, importPDF, deletePDF, toggleFavorite } = usePDFStore();
   const { profile } = useProfileStore();
+  const { generateDeckFromTopic } = useFlashcardStore();
   
   const [search, setSearch] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('All');
@@ -46,6 +48,11 @@ export const PDFLibraryScreen = () => {
       { text: "Cancel", style: "cancel" },
       { text: "Delete", style: "destructive", onPress: () => deletePDF(id) }
     ]);
+  };
+
+  const handleGenerateFlashcards = async (pdf: any) => {
+    await generateDeckFromTopic(pdf.name, pdf.subject);
+    navigation.navigate('Flashcards');
   };
 
   const ListHeader = useMemo(() => (
@@ -123,6 +130,7 @@ export const PDFLibraryScreen = () => {
             onPress={(pdf) => navigation.navigate('PDFViewer', { pdf })}
             onFavorite={toggleFavorite}
             onDelete={handleDelete}
+            onGenerateFlashcards={handleGenerateFlashcards}
           />
         )}
         ListHeaderComponent={ListHeader}

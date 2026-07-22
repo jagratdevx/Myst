@@ -80,6 +80,23 @@ export const flashcardService = {
     return deck;
   },
 
+  async generateDeckFromTopic(title: string, subject: string): Promise<FlashcardDeck> {
+    const deck = await this.createDeck(title, `${subject} - ${title}`, 'pdf');
+    const systemMsg = { role: 'system' as const, content: 'Generate 5-10 flashcards about this topic. Return them as a JSON array of {"front":"question","back":"answer"} objects. Only return valid JSON, no other text.' };
+    const userMsg = { role: 'user' as const, content: `Topic: ${title}\nSubject: ${subject}\nGenerate flashcards covering key concepts, definitions, and important facts.` };
+    try {
+      const response = await aiService.sendMessage([systemMsg, userMsg]);
+      const jsonMatch = response.match(/\[[\s\S]*?\]/);
+      if (jsonMatch) {
+        const pairs = JSON.parse(jsonMatch[0]);
+        for (const pair of pairs) {
+          await this.addCard(deck.id, pair.front, pair.back);
+        }
+      }
+    } catch { /* cards may be empty */ }
+    return deck;
+  },
+
   async updateCardReview(cardId: string, quality: number): Promise<void> {
     const cards = await loadCards();
     const card = cards.find(c => c.id === cardId);

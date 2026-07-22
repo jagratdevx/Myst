@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { GlassCard } from '../ui/GlassCard';
 import { useTheme } from '../../hooks/useTheme';
 import { PDFDocument } from '../../types/pdf';
-import { FileText, Star, Clock, Trash2, MoreVertical } from 'lucide-react-native';
+import { FileText, Star, Clock, Trash2, Brain } from 'lucide-react-native';
 import Animated, { FadeInDown, Layout } from 'react-native-reanimated';
 import { hapticService } from '../../services/hapticService';
 
@@ -13,9 +13,10 @@ interface PDFCardProps {
   onPress: (pdf: PDFDocument) => void;
   onFavorite: (id: string) => void;
   onDelete: (id: string) => void;
+  onGenerateFlashcards?: (pdf: PDFDocument) => void;
 }
 
-export const PDFCard = React.memo(({ pdf, index, onPress, onFavorite, onDelete }: PDFCardProps) => {
+export const PDFCard = React.memo(({ pdf, index, onPress, onFavorite, onDelete, onGenerateFlashcards }: PDFCardProps) => {
   const { colors } = useTheme();
 
   const handlePress = () => {
@@ -68,6 +69,11 @@ export const PDFCard = React.memo(({ pdf, index, onPress, onFavorite, onDelete }
             </View>
 
             <View style={styles.actions}>
+              {onGenerateFlashcards && (
+                <TouchableOpacity onPress={() => onGenerateFlashcards(pdf)} style={styles.actionBtn}>
+                  <Brain size={18} color={colors.accentSecondary} />
+                </TouchableOpacity>
+              )}
               <TouchableOpacity onPress={handleFavorite} style={styles.actionBtn}>
                 <Star 
                   size={18} 
