@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ChatMessage } from '../types/chat';
 import { aiService } from '../services/aiService';
+import { buildAppContext } from '../services/appContextService';
 import { decryptData, encryptData } from '../utils/encryption';
 
 const CHAT_STORAGE_KEY = '@myst_chat_history_v2';
@@ -86,7 +87,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
       await saveMessages(currentMessages);
       if (get().requestId !== requestId) return;
 
-      const aiResponseContent = await aiService.sendMessage(currentMessages, requestController.signal);
+      const ctxMsg: ChatMessage = { id: 'ctx-' + Math.random().toString(36).substring(7), role: 'system', content: buildAppContext(), timestamp: Date.now() };
+      const aiResponseContent = await aiService.sendMessage([ctxMsg, ...currentMessages], requestController.signal);
       if (get().requestId !== requestId) return;
 
       const aiMessage: ChatMessage = {
@@ -118,7 +120,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const requestController = new AbortController();
     set({ loading: true, error: null, requestId, requestController });
     try {
-      const aiResponseContent = await aiService.sendMessage(messages, requestController.signal);
+      const ctxMsg: ChatMessage = { id: 'ctx-' + Math.random().toString(36).substring(7), role: 'system', content: buildAppContext(), timestamp: Date.now() };
+      const aiResponseContent = await aiService.sendMessage([ctxMsg, ...messages], requestController.signal);
       if (get().requestId !== requestId) return;
       const updatedMessages = [...messages, {
         id: Math.random().toString(36).substring(7),
