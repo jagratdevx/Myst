@@ -9,10 +9,16 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "GROQ_API_KEY": "$GROQ_API_KEY"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "GROQ_API_KEY": "$GROQ_API_KEY"
+      }
     }
   },
   "submit": {
