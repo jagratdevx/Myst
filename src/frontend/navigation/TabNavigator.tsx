@@ -9,7 +9,8 @@ import {
   Wallet, 
   BarChart3, 
   Settings,
-  MessageSquare
+  MessageSquare,
+  Brain
 } from 'lucide-react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { useResponsive } from '../../hooks/useResponsive';
@@ -24,6 +25,7 @@ import { PDFLibraryScreen } from '../screens/PDFLibraryScreen';
 import { FinanceScreen } from '../screens/FinanceScreen';
 import { TestScoreScreen } from '../screens/TestScoreScreen';
 import { ChatbotScreen } from '../screens/ChatbotScreen';
+import { FlashcardScreen } from '../screens/FlashcardScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -67,6 +69,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
             case 'Planner': return <Calendar {...props} />;
             case 'Chat': return <MessageSquare {...props} />;
             case 'Library': return <Library {...props} />;
+            case 'Flashcards': return <Brain {...props} />;
             case 'Finance': return <Wallet {...props} />;
             case 'TestScore': return <BarChart3 {...props} />;
             case 'Settings': return <Settings {...props} />;
@@ -118,6 +121,7 @@ export const TabNavigator = () => {
       <Tab.Screen name="Planner" component={PlannerScreen} />
       <Tab.Screen name="Chat" component={ChatbotScreen} />
       <Tab.Screen name="Library" component={PDFLibraryScreen} />
+      <Tab.Screen name="Flashcards" component={FlashcardScreen} />
       <Tab.Screen name="Finance" component={FinanceScreen} />
       <Tab.Screen name="TestScore" component={TestScoreScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />

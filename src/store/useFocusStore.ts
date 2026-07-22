@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { FocusStats, FocusSession } from '../types';
 import { focusService } from '../services/focusService';
+import { awardFocusXP } from './useGamificationStore';
 
 interface FocusState {
   stats: FocusStats;
@@ -37,6 +38,7 @@ export const useFocusStore = create<FocusState>((set) => ({
       const updatedStats = await focusService.completeSession(duration, mode);
       const recentSessions = await focusService.getRecentSessions();
       set({ stats: updatedStats, recentSessions });
+      if (mode === 'study') awardFocusXP(duration);
     } catch (error) {
       console.error('Failed to save focus session:', error);
     }

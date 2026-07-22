@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { TestScore, SubjectTotal } from '../types/testScore';
 import { testScoreService } from '../services/testScoreService';
+import { awardTestScoreXP } from './useGamificationStore';
 
 interface TestScoreState {
   scores: TestScore[];
@@ -33,6 +34,7 @@ export const useTestScoreStore = create<TestScoreState>((set, get) => ({
     };
     await testScoreService.save(newScore);
     set(state => ({ scores: [...state.scores, newScore] }));
+    awardTestScoreXP(totalMarks > 0 ? Math.round((score / totalMarks) * 100) : 0);
   },
 
   deleteScore: async (id: string) => {

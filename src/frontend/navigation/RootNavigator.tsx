@@ -4,6 +4,8 @@ import { NavigationContainer, NavigationProp } from '@react-navigation/native';
 import { TabNavigator } from './TabNavigator';
 import { PDFViewerScreen } from '../screens/PDFViewerScreen';
 import { EditProfileScreen } from '../screens/EditProfileScreen';
+import { DeckDetailScreen } from '../screens/DeckDetailScreen';
+import { FlashcardQuizScreen } from '../screens/FlashcardQuizScreen';
 import { OnboardingWelcome } from '../screens/Onboarding/OnboardingWelcome';
 import { OnboardingProfile } from '../screens/Onboarding/OnboardingProfile';
 import { OnboardingSubjects } from '../screens/Onboarding/OnboardingSubjects';
@@ -66,6 +68,8 @@ export const RootNavigator = () => {
         <Stack.Screen name="Main" component={TabNavigator} />
         <Stack.Screen name="PDFViewer" component={PDFViewerScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="DeckDetail" component={DeckDetailScreen} />
+        <Stack.Screen name="FlashcardQuiz" component={FlashcardQuizScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { PDFDocument } from '../types/pdf';
 import { pdfService } from '../services/pdfService';
+import { awardPDFImportXP } from './useGamificationStore';
 
 interface PDFState {
   pdfs: PDFDocument[];
@@ -26,6 +27,7 @@ export const usePDFStore = create<PDFState>((set, get) => ({
     const newPDF = await pdfService.importPDF(subject);
     if (newPDF) {
       set({ pdfs: [newPDF, ...get().pdfs] });
+      awardPDFImportXP();
     }
   },
 

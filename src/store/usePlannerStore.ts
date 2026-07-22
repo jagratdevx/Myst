@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Task } from '../types';
 import { plannerService } from '../services/plannerService';
+import { awardTaskXP } from './useGamificationStore';
 
 interface PlannerState {
   tasks: Task[];
@@ -42,6 +43,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
         set({
           tasks: get().tasks.map(t => t.id === id ? updatedTask : t)
         });
+        if (updatedTask.completed) awardTaskXP();
       }
     } catch (error) {
       console.error('Failed to toggle task:', error);
