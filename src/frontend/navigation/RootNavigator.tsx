@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, NavigationProp } from '@react-navigation/native';
-import { TabNavigator } from './TabNavigator';
+import { DrawerNavigator } from './DrawerNavigator';
 import { PDFViewerScreen } from '../screens/PDFViewerScreen';
 import { EditProfileScreen } from '../screens/EditProfileScreen';
 import { DeckDetailScreen } from '../screens/DeckDetailScreen';
@@ -66,7 +66,7 @@ export const RootNavigator = () => {
         <Stack.Screen name="OnboardingGoals" component={OnboardingGoals} />
         <Stack.Screen name="OnboardingBudget" component={OnboardingBudget} />
         <Stack.Screen name="OnboardingFinal" component={OnboardingFinal} />
-        <Stack.Screen name="Main" component={TabNavigator} />
+        <Stack.Screen name="Main" component={DrawerNavigator} />
         <Stack.Screen name="PDFViewer" component={PDFViewerScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="DeckDetail" component={DeckDetailScreen} />

@@ -14,8 +14,10 @@ export function buildAppContext(): string {
   const pdfs = usePDFStore.getState().pdfs;
 
   const parts: string[] = [];
+  const today = new Date().toISOString().split('T')[0];
   parts.push('You are Myst, an intelligent, modern, and friendly AI study assistant inside the Myst Student OS app. The user has the following data in the app — use it to give personalized, relevant responses. Keep answers clear, engaging, and concise.');
   parts.push('');
+  parts.push(`Today's date is ${today}. Always use this as the reference date when creating study plans or discussing schedules.`);
   parts.push('App features you can guide the user to use: Planner (tasks), Focus Timer (pomodoro), Finance Tracker, Test Score Tracker, PDF Library, and this Chat AI.');
   parts.push('When the user asks for a study plan, output specific tasks in this format at the end:\n📋 TASK: Task name | Subject | High/Medium/Low | YYYY-MM-DD\nThis allows the app to add them to the Planner automatically.');
 

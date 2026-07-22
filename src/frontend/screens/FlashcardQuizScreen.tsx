@@ -6,8 +6,8 @@ import { GlassCard } from '../ui/GlassCard';
 import { useTheme } from '../../hooks/useTheme';
 import { useFlashcardStore } from '../../store/useFlashcardStore';
 import { Flashcard } from '../../types/flashcard';
-import { ChevronLeft, Check, X, RotateCcw } from 'lucide-react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { ChevronLeft, Check, X, RotateCcw, FlipHorizontal, ArrowRight } from 'lucide-react-native';
+import Animated, { FadeIn, useSharedValue, useAnimatedStyle, withTiming, interpolate, Easing } from 'react-native-reanimated';
 
 type RouteParams = { deckId: string };
 
@@ -23,6 +23,7 @@ export const FlashcardQuizScreen = () => {
   const [correct, setCorrect] = useState(0);
   const [incorrect, setIncorrect] = useState(0);
   const [finished, setFinished] = useState(false);
+  const rotate = useSharedValue(0);
 
   useEffect(() => {
     const deckCards = cards.filter(c => c.deckId === deckId && c.nextReview <= Date.now());
@@ -35,21 +36,40 @@ export const FlashcardQuizScreen = () => {
 
   const current = quizCards[currentIndex];
 
+  const frontStyle = useAnimatedStyle(() => ({
+    transform: [{ perspective: 1000 }, { rotateY: `${interpolate(rotate.value, [0, 180], [0, 180])}deg` }],
+    backfaceVisibility: 'hidden' as const,
+  }));
+
+  const backStyle = useAnimatedStyle(() => ({
+    transform: [{ perspective: 1000 }, { rotateY: `${interpolate(rotate.value, [0, 180], [180, 360])}deg` }],
+    backfaceVisibility: 'hidden' as const,
+    position: 'absolute' as const,
+    top: 0, left: 0, right: 0,
+  }));
+
+  const handleFlip = () => {
+    rotate.value = withTiming(flipped ? 0 : 180, { duration: 500, easing: Easing.inOut(Easing.ease) });
+    setFlipped(!flipped);
+  };
+
   const handleAnswer = useCallback(async (quality: number) => {
     if (!current) return;
     await updateCardReview(current.id, quality);
     if (quality >= 3) setCorrect(c => c + 1);
     else setIncorrect(c => c + 1);
+    rotate.value = withTiming(0, { duration: 0 });
     setFlipped(false);
     if (currentIndex + 1 >= quizCards.length) {
       setFinished(true);
     } else {
       setCurrentIndex(i => i + 1);
     }
-  }, [current, currentIndex, quizCards.length, updateCardReview]);
+  }, [current, currentIndex, quizCards.length, updateCardReview, rotate]);
 
   const restart = () => {
     setCurrentIndex(0);
+    rotate.value = withTiming(0, { duration: 0 });
     setFlipped(false);
     setCorrect(0);
     setIncorrect(0);
@@ -108,33 +128,44 @@ export const FlashcardQuizScreen = () => {
         </View>
       ) : (
         <View style={styles.quizContainer}>
-          <Animated.View key={currentIndex} entering={FadeIn} style={{ flex: 1 }}>
-            <TouchableOpacity style={styles.cardArea} onPress={() => setFlipped(!flipped)} activeOpacity={0.9}>
-              <GlassCard style={styles.flashcard}>
-                <Text style={[styles.tapHint, { color: colors.textSecondary }]}>Tap to {flipped ? 'see question' : 'reveal answer'}</Text>
-                <Text style={[styles.cardText, { color: colors.textPrimary }]}>
-                  {flipped ? current.back : current.front}
-                </Text>
-                {flipped && current.hints && (
-                  <Text style={[styles.hintText, { color: colors.warning }]}>💡 {current.hints}</Text>
-                )}
-              </GlassCard>
-            </TouchableOpacity>
+          <Animated.View key={currentIndex} style={styles.cardArea}>
+            <View style={styles.cardStack}>
+              <Animated.View style={[styles.cardWrapper, frontStyle]}>
+                <GlassCard style={styles.flashcard}>
+                  <Text style={[styles.cardLabel, { color: colors.textSecondary }]}>Question</Text>
+                  <Text style={[styles.cardText, { color: colors.textPrimary }]}>{current.front}</Text>
+                </GlassCard>
+              </Animated.View>
+              <Animated.View style={[styles.cardWrapper, backStyle]}>
+                <GlassCard style={styles.flashcard}>
+                  <Text style={[styles.cardLabel, { color: colors.textSecondary }]}>Answer</Text>
+                  <Text style={[styles.cardText, { color: colors.accent }]}>{current.back}</Text>
+                  {current.hints && <Text style={[styles.hintText, { color: colors.warning }]}>💡 {current.hints}</Text>}
+                </GlassCard>
+              </Animated.View>
+            </View>
           </Animated.View>
 
+          <View style={styles.actionRow}>
+            <TouchableOpacity style={[styles.flipBtn, { backgroundColor: `${colors.accentSecondary}20` }]} onPress={handleFlip} activeOpacity={0.7}>
+              <FlipHorizontal size={20} color={colors.accentSecondary} />
+              <Text style={[styles.flipLabel, { color: colors.accentSecondary }]}>Flip</Text>
+            </TouchableOpacity>
+          </View>
+
           {flipped && (
-            <Animated.View entering={FadeIn} style={styles.actionRow}>
-              <TouchableOpacity style={[styles.actionBtn, { backgroundColor: `${colors.error}20` }]} onPress={() => handleAnswer(1)}>
-                <X size={28} color={colors.error} />
-                <Text style={[styles.actionLabel, { color: colors.error }]}>Hard</Text>
+            <Animated.View entering={FadeIn} style={styles.ratingRow}>
+              <TouchableOpacity style={[styles.ratingBtn, { backgroundColor: `${colors.error}20}` }]} onPress={() => handleAnswer(1)}>
+                <X size={24} color={colors.error} />
+                <Text style={[styles.ratingLabel, { color: colors.error }]}>Hard</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, { backgroundColor: `${colors.warning}20` }]} onPress={() => handleAnswer(3)}>
-                <Text style={{ fontSize: 24 }}>🤔</Text>
-                <Text style={[styles.actionLabel, { color: colors.warning }]}>Okay</Text>
+              <TouchableOpacity style={[styles.ratingBtn, { backgroundColor: `${colors.warning}20` }]} onPress={() => handleAnswer(3)}>
+                <Text style={{ fontSize: 22 }}>🤔</Text>
+                <Text style={[styles.ratingLabel, { color: colors.warning }]}>Okay</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtn, { backgroundColor: `${colors.success}20` }]} onPress={() => handleAnswer(5)}>
-                <Check size={28} color={colors.success} />
-                <Text style={[styles.actionLabel, { color: colors.success }]}>Easy</Text>
+              <TouchableOpacity style={[styles.ratingBtn, { backgroundColor: `${colors.success}20` }]} onPress={() => handleAnswer(5)}>
+                <Check size={24} color={colors.success} />
+                <Text style={[styles.ratingLabel, { color: colors.success }]}>Easy</Text>
               </TouchableOpacity>
             </Animated.View>
           )}
@@ -151,13 +182,18 @@ const styles = StyleSheet.create({
   progress: { fontSize: 14, fontWeight: '600' },
   quizContainer: { flex: 1, paddingHorizontal: 16, justifyContent: 'center' },
   cardArea: { flex: 1, justifyContent: 'center' },
+  cardStack: { position: 'relative', minHeight: 280 },
+  cardWrapper: { width: '100%' },
   flashcard: { padding: 32, minHeight: 280, justifyContent: 'center', alignItems: 'center' },
-  tapHint: { fontSize: 12, fontWeight: '500', marginBottom: 16 },
+  cardLabel: { fontSize: 12, fontWeight: '600', marginBottom: 16, letterSpacing: 1, textTransform: 'uppercase' },
   cardText: { fontSize: 20, fontWeight: '700', textAlign: 'center', lineHeight: 28 },
   hintText: { fontSize: 14, fontWeight: '500', marginTop: 16, textAlign: 'center' },
-  actionRow: { flexDirection: 'row', justifyContent: 'center', gap: 16, marginBottom: 40 },
-  actionBtn: { alignItems: 'center', justifyContent: 'center', width: 80, height: 80, borderRadius: 40, gap: 4 },
-  actionLabel: { fontSize: 12, fontWeight: '700' },
+  actionRow: { flexDirection: 'row', justifyContent: 'center', marginBottom: 16 },
+  flipBtn: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 28, paddingVertical: 14, borderRadius: 14, gap: 8 },
+  flipLabel: { fontSize: 15, fontWeight: '700' },
+  ratingRow: { flexDirection: 'row', justifyContent: 'center', gap: 20, marginBottom: 40 },
+  ratingBtn: { alignItems: 'center', justifyContent: 'center', width: 80, height: 80, borderRadius: 40, gap: 4 },
+  ratingLabel: { fontSize: 12, fontWeight: '700' },
   finishedContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 32 },
   finishedTitle: { fontSize: 28, fontWeight: '800', marginBottom: 24 },
   resultCard: { padding: 24, width: '100%', marginBottom: 24 },

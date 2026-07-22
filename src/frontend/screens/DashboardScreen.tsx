@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, { useEffect, useMemo, useCallback, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AnimatedScreenWrapper } from '../ui/AnimatedScreenWrapper';
 import { SectionHeader } from '../ui/SectionHeader';
@@ -14,7 +14,7 @@ import { usePDFStore } from '../../store/usePDFStore';
 import { usePlannerStore } from '../../store/usePlannerStore';
 import { useGamificationStore } from '../../store/useGamificationStore';
 import { StatItem } from '../components/StatItem';
-import { Zap, Clock, Flame, FileText, ChevronRight, Brain, Trophy, Sparkles, BookOpen } from 'lucide-react-native';
+import { Zap, Clock, Flame, FileText, ChevronRight, Brain, Trophy, Sparkles, BookOpen, Menu } from 'lucide-react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { formatCurrency } from '../../utils/currency';
 
@@ -64,13 +64,20 @@ export const DashboardScreen = () => {
 
   const recentBadges = gamification.badges.slice(-3);
 
+  const [planModalVisible, setPlanModalVisible] = useState(false);
+  const [planStartDate, setPlanStartDate] = useState(new Date().toISOString().split('T')[0]);
+  const [planDays, setPlanDays] = useState('7');
+
   const handleGenerateStudyPlan = useCallback(() => {
+    const start = planStartDate;
+    const end = new Date(new Date(start).getTime() + parseInt(planDays || '7') * 86400000).toISOString().split('T')[0];
     navigation.navigate('Chat');
     setTimeout(() => {
       const { sendMessage } = require('../../store/useChatStore').useChatStore.getState();
-      sendMessage('Create a personalized study plan for me based on my current tasks, test scores, and focus stats. Include specific tasks I can add to my planner using the TASK format.');
+      sendMessage(`Create a personalized study plan for me from ${start} to ${end} (${planDays} days). Base it on my current tasks, test scores, and focus stats. Include specific tasks I can add to my planner using the TASK format with deadlines within this date range.`);
     }, 500);
-  }, [navigation]);
+    setPlanModalVisible(false);
+  }, [navigation, planStartDate, planDays]);
 
   if (!aggregateData && loading) {
     return (
@@ -84,6 +91,9 @@ export const DashboardScreen = () => {
     <AnimatedScreenWrapper>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scrollContent, { paddingHorizontal: contentPadding }]}>
         <Animated.View entering={FadeIn.delay(200)} style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => (navigation as any).openDrawer?.()} style={styles.menuBtn}>
+            <Menu size={24} color={colors.textPrimary} />
+          </TouchableOpacity>
           <Text style={[styles.greeting, { color: colors.textPrimary }]}>Hi, {profile?.name?.split(' ')[0] || 'Student'}</Text>
           <Text style={[styles.date, { color: colors.textSecondary }]}>{today}</Text>
         </Animated.View>
@@ -156,7 +166,7 @@ export const DashboardScreen = () => {
 
         <SectionHeader title="Quick Actions" />
         <View style={styles.quickActions}>
-          <TouchableOpacity style={[styles.actionButton, { backgroundColor: `${colors.accent}15` }]} onPress={handleGenerateStudyPlan} activeOpacity={0.7}>
+          <TouchableOpacity style={[styles.actionButton, { backgroundColor: `${colors.accent}15` }]} onPress={() => setPlanModalVisible(true)} activeOpacity={0.7}>
             <Brain size={22} color={colors.accent} />
             <Text style={[styles.actionLabel, { color: colors.accent }]}>Study Plan</Text>
           </TouchableOpacity>
@@ -195,6 +205,39 @@ export const DashboardScreen = () => {
 
         <View style={{ height: 120 }} />
       </ScrollView>
+
+      <Modal visible={planModalVisible} transparent animationType="fade" onRequestClose={() => setPlanModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <GlassCard style={styles.modalCard}>
+            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Study Plan Dates</Text>
+            <Text style={[styles.modalSub, { color: colors.textSecondary }]}>Start date (YYYY-MM-DD):</Text>
+            <TextInput
+              style={[styles.modalInput, { color: colors.textPrimary, borderColor: colors.border, backgroundColor: colors.card }]}
+              value={planStartDate}
+              onChangeText={setPlanStartDate}
+              placeholder="2026-07-22"
+              placeholderTextColor={colors.textSecondary}
+            />
+            <Text style={[styles.modalSub, { color: colors.textSecondary }]}>Number of days:</Text>
+            <TextInput
+              style={[styles.modalInput, { color: colors.textPrimary, borderColor: colors.border, backgroundColor: colors.card }]}
+              value={planDays}
+              onChangeText={setPlanDays}
+              placeholder="7"
+              placeholderTextColor={colors.textSecondary}
+              keyboardType="number-pad"
+            />
+            <View style={styles.modalActions}>
+              <TouchableOpacity style={[styles.modalBtn, { backgroundColor: colors.glass }]} onPress={() => setPlanModalVisible(false)}>
+                <Text style={[styles.modalBtnText, { color: colors.textSecondary }]}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.modalBtn, { backgroundColor: colors.accent }]} onPress={handleGenerateStudyPlan}>
+                <Text style={[styles.modalBtnText, { color: '#FFF' }]}>Generate</Text>
+              </TouchableOpacity>
+            </View>
+          </GlassCard>
+        </View>
+      </Modal>
     </AnimatedScreenWrapper>
   );
 };
@@ -203,6 +246,7 @@ const styles = StyleSheet.create({
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   scrollContent: { paddingTop: 10 },
   headerContainer: { alignItems: 'center', marginBottom: 10 },
+  menuBtn: { position: 'absolute', left: 0, top: 4, padding: 8, zIndex: 10 },
   greeting: { fontSize: 28, fontWeight: '800', letterSpacing: -0.5, textAlign: 'center' },
   date: { fontSize: 16, marginTop: 4, fontWeight: '500', textAlign: 'center' },
   xpCard: { padding: 16, marginTop: 12 },
@@ -242,4 +286,12 @@ const styles = StyleSheet.create({
   financeMeta: { fontSize: 12, fontWeight: '600', marginTop: 4 },
   financeTrend: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
   trendText: { fontSize: 12, fontWeight: '700' },
+  modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: 20 },
+  modalCard: { width: '100%', maxWidth: 340, padding: 24, borderRadius: 24 },
+  modalTitle: { fontSize: 20, fontWeight: '800', textAlign: 'center', marginBottom: 4 },
+  modalSub: { fontSize: 14, fontWeight: '600', marginTop: 12, marginBottom: 4 },
+  modalInput: { borderWidth: 1.5, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, fontSize: 16, fontWeight: '600' },
+  modalActions: { flexDirection: 'row', gap: 10, marginTop: 20 },
+  modalBtn: { flex: 1, paddingVertical: 12, borderRadius: 14, alignItems: 'center' },
+  modalBtnText: { fontSize: 15, fontWeight: '700' },
 });

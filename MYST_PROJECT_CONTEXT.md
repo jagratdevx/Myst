@@ -8,14 +8,17 @@
 - **Current Version**: v3.1-premium
 
 ## 2. Core Features
-- **Dashboard**: Aggregated overview of productivity, library stats, and INR budget health.
+- **Dashboard**: Aggregated overview of productivity, XP/level, today's tasks, library stats, INR budget health, and quick actions (Study Plan, Focus, Planner).
 - **Onboarding**: 6-step personalized setup (Welcome, Profile, Subjects, Goals, Monthly Student Budget, Theme).
+- **Gamification**: XP system earned from focus sessions, task completion, test scores, PDF imports. Level progression (100→200→500 XP/level). 10 earnable badges.
 - **Finance**: Local INR expense tracking with monthly budget, optional savings goal, spending percentage, savings percentage, and remaining balance.
-- **Library (PDF System)**: Native, high-performance PDF viewing using `react-native-pdf`. Subject-wise organization and real-time page tracking.
+- **Library (PDF System)**: Native, high-performance PDF viewing using `react-native-pdf`. Subject-wise organization and real-time page tracking. Generate flashcards from any PDF via AI.
 - **Focus**: Pomodoro-style timer with integrated high-quality offline ambient sounds (Rain, Forest, Cafe, Noise), breathing animations, and streak tracking.
 - **Planner**: Academic task manager with dynamic horizontal calendar, week-by-week navigation, and centered symmetrical header.
 - **Test Scores**: Track total marks per subject vs achieved scores. Add/delete entries with a floating action button. Subject-select chips, overall total card with percentage, and recent entries list.
-- **AI Chatbot (Myst AI)**: Groq-powered (llama-3.3-70b-versatile) study assistant with KaTeX math rendering, markdown formatting (bold, italic, code), and encrypted chat history.
+- **AI Chatbot (Myst AI)**: Groq-powered (llama-3.3-70b-versatile) study assistant with KaTeX math rendering, markdown formatting (bold, italic, code), encrypted chat history, and study plan generation with one-tap add-to-planner.
+- **Flashcards**: Spaced-repetition (SM-2 algorithm) flashcard system with manual deck creation and AI-generated decks from PDFs. Two modes: Study (animated flip cards with Next) and Quiz (flip + rate Hard/Okay/Easy).
+- **Navigation**: Left-sliding drawer menu with profile, XP bar, and all screens. Swipe gesture or hamburger button to open.
 - **Settings**: Comprehensive Profile editing, High Contrast accessibility mode, Study Library management, Data Export, and Reset.
 
 ## 3. Architecture

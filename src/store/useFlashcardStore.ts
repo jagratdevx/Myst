@@ -10,6 +10,7 @@ interface FlashcardStore {
   createDeck: (title: string, description: string, source?: 'manual' | 'pdf', sourcePdfId?: string) => Promise<FlashcardDeck>;
   addCard: (deckId: string, front: string, back: string, hints?: string) => Promise<void>;
   generateFromPDF: (deckTitle: string, pdfText: string) => Promise<FlashcardDeck>;
+  generateDeckFromTopic: (title: string, subject: string) => Promise<FlashcardDeck>;
   deleteDeck: (deckId: string) => Promise<void>;
   deleteCard: (cardId: string) => Promise<void>;
   updateCardReview: (cardId: string, quality: number) => Promise<void>;
@@ -44,6 +45,14 @@ export const useFlashcardStore = create<FlashcardStore>((set) => ({
 
   generateFromPDF: async (deckTitle, pdfText) => {
     const deck = await flashcardService.generateFromPDF(deckTitle, pdfText);
+    const decks = await flashcardService.getDecks();
+    const cards = await flashcardService.getCards();
+    set({ decks, cards });
+    return deck;
+  },
+
+  generateDeckFromTopic: async (title, subject) => {
+    const deck = await flashcardService.generateDeckFromTopic(title, subject);
     const decks = await flashcardService.getDecks();
     const cards = await flashcardService.getCards();
     set({ decks, cards });

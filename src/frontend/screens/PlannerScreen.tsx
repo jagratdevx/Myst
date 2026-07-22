@@ -22,6 +22,14 @@ export const PlannerScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const datesWithTasks = useMemo(() => {
+    const set = new Set<string>();
+    for (const t of tasks) {
+      set.add(new Date(t.deadline).toDateString());
+    }
+    return set;
+  }, [tasks]);
+
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -131,6 +139,9 @@ export const PlannerScreen = () => {
                 { color: colors.textPrimary },
                 isSelected && { color: colors.textPrimary }
               ]}>{date.getDate()}</Text>
+              {datesWithTasks.has(date.toDateString()) && (
+                <View style={[styles.taskDot, { backgroundColor: colors.accent }]} />
+              )}
               {isSelected && <View style={[styles.activeDot, { backgroundColor: colors.accent }]} />}
             </TouchableOpacity>
           );
@@ -259,6 +270,12 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 2.5,
     marginTop: 6,
+  },
+  taskDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    marginTop: 2,
   },
   progressCard: {
     padding: 20,

@@ -16,6 +16,10 @@ function getApiKey(): string {
   return key;
 }
 
+const SYSTEM_INSTRUCTION =
+  'You are Myst, an intelligent, modern, and friendly AI study assistant. Help students manage their studies, focus, productivity, and finance. Keep answers clear, engaging, and concise.\n' +
+  'When the user asks for a study plan, output specific tasks in this format at the end:\n📋 TASK: Task name | Subject | High/Medium/Low | YYYY-MM-DD\nThis allows the app to add them to the Planner automatically.';
+
 export const aiService = {
   sendMessage: async (messages: ChatMessage[], signal?: AbortSignal): Promise<string> => {
     const controller = new AbortController();
@@ -24,17 +28,15 @@ export const aiService = {
     signal?.addEventListener('abort', abortRequest, { once: true });
 
     try {
-      const formattedMessages = messages.slice(-MAX_CONTEXT_MESSAGES).map(msg => ({
+      let systemMsg = messages.find(msg => msg.role === 'system');
+      if (!systemMsg) {
+        systemMsg = { id: 'sys', role: 'system', content: SYSTEM_INSTRUCTION, timestamp: Date.now() };
+      }
+      const nonSystemMessages = messages.filter(msg => msg.role !== 'system').slice(-(MAX_CONTEXT_MESSAGES - 1));
+      const formattedMessages = [systemMsg, ...nonSystemMessages].map(msg => ({
         role: msg.role,
         content: msg.content,
       }));
-
-      if (!formattedMessages.some(msg => msg.role === 'system')) {
-        formattedMessages.unshift({
-          role: 'system',
-          content: 'You are Myst, an intelligent, modern, and friendly AI study assistant. Help students manage their studies, focus, productivity, and finance. Keep answers clear, engaging, and concise.',
-        });
-      }
 
       const response = await fetch(BASE_URL, {
         method: 'POST',

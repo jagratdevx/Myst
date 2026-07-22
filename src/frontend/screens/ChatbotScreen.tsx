@@ -64,14 +64,15 @@ export const ChatbotScreen = () => {
   const handleAddTasks = useCallback(async (content: string) => {
     const tasks = parseTasks(content);
     if (tasks.length === 0) return;
-    Alert.alert('Add to Planner', `Add ${tasks.length} task${tasks.length > 1 ? 's' : ''} to your planner?`, [
+    const dates = [...new Set(tasks.map(t => t.deadline))].join(', ');
+    Alert.alert('Add to Planner', `Add ${tasks.length} task${tasks.length > 1 ? 's' : ''} to your planner?\n📅 Dates: ${dates}`, [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Add All', onPress: async () => {
           for (const t of tasks) {
             await addTask({ title: t.title, subject: t.subject, priority: t.priority, deadline: t.deadline, completed: false });
           }
-          Alert.alert('Done', `${tasks.length} task${tasks.length > 1 ? 's' : ''} added to your planner!`);
+          Alert.alert('Done', `${tasks.length} task${tasks.length > 1 ? 's' : ''} added to your planner! Check the Planner tab — look for dates marked with dots on the calendar.`);
         }
       },
     ]);
@@ -344,7 +345,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: Platform.OS === 'ios' ? 100 : 80,
+    paddingBottom: Platform.OS === 'ios' ? 30 : 20,
   },
   inputCard: {
     flexDirection: 'row',

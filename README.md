@@ -4,6 +4,11 @@
 
 ## 🚀 Key Features
 
+### 🏆 Gamification & XP
+*   **Level System**: Earn XP from focus sessions, tasks, test scores, and PDF imports.
+*   **Badges**: 10 unlockable achievements (Task Master, Scholar, Bookworm, etc.).
+*   **Dashboard XP Card**: Level progress bar and badge showcase.
+
 ### 🧪 Test Score Tracker
 *   **Subject-Wise Totals**: Track total marks achieved vs total marks per subject.
 *   **Overall Performance**: Aggregate score across all tests with percentage.
@@ -12,6 +17,8 @@
 
 ### 🤖 Myst AI Assistant (Groq-Powered)
 *   **LLM-Powered Chat**: Ask study questions, get explanations, and receive academic guidance.
+*   **Study Plan Generator**: AI creates personalized study plans that can be added to your Planner with one tap.
+*   **Full App Context**: AI knows your tasks, test scores, focus stats, and finances.
 *   **LaTeX Rendering**: Mathematical expressions render beautifully via KaTeX with horizontal scroll for long equations.
 *   **Markdown Formatting**: Bold, italic, code blocks — all rendered natively.
 
@@ -19,6 +26,13 @@
 *   **Integrated Reading**: High-performance native PDF viewing using `react-native-pdf`.
 *   **Subject-Wise Organization**: Categorize study materials by academic subject.
 *   **Real-time Tracking**: Page progress tracking (Page X of Y) and "Last Opened" metadata.
+*   **AI Flashcards**: Generate a flashcard deck from any PDF with one tap — AI extracts key concepts.
+
+### 🃏 Flashcard System
+*   **Spaced Repetition**: SM-2 algorithm schedules reviews for optimal memory retention.
+*   **Two Study Modes**: Study (animated flip cards + next button) and Quiz (flip + rate Hard/Okay/Easy).
+*   **AI-Generated Decks**: Create decks from PDFs or topics via Groq AI.
+*   **Manual Cards**: Create custom decks with front/back/hints.
 
 ### ⏱️ Deep Focus Engine
 *   **Pomodoro Timer**: Customizable study/break intervals.
@@ -37,8 +51,9 @@
 
 ## ✨ Premium Experience & UI
 
+*   **Drawer Navigation**: Left-sliding drawer with profile, XP bar, and all screens. Swipe gesture or hamburger button.
 *   **Tactile Layer**: Integrated haptic feedback (`expo-haptics`) for every interaction.
-*   **Kinetic Motion**: Fluid, spring-loaded transitions and staggered list animations.
+*   **Kinetic Motion**: Fluid, spring-loaded transitions, staggered list animations, and 3D card flips.
 *   **High Contrast Mode**: Dedicated accessibility theme for maximum legibility.
 *   **Hardware Optimized**: Built to run at a fluid 60fps even on budget Android devices.
 *   **Notch-Safe**: Global layout intelligence that automatically adjusts for camera notches and Dynamic Islands.
