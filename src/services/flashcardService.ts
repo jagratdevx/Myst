@@ -65,7 +65,7 @@ export const flashcardService = {
 
   async generateFromPDF(deckTitle: string, pdfText: string): Promise<FlashcardDeck> {
     const deck = await this.createDeck(deckTitle, `Generated from ${deckTitle}`, 'pdf');
-    const systemMsg = { role: 'system' as const, content: 'Extract 5-10 key concepts from the text and return them as a JSON array of {"front":"question","back":"answer"} objects. Only return valid JSON, no other text.' };
+    const systemMsg = { role: 'system' as const, content: 'Extract 5-10 key concepts from the text. Return ONLY valid JSON array of {"front":"question","back":"answer"} objects — absolutely no other text.' };
     const userMsg = { role: 'user' as const, content: pdfText.substring(0, 3000) };
     try {
       const response = await aiService.sendMessage([systemMsg, userMsg]);
@@ -82,7 +82,7 @@ export const flashcardService = {
 
   async generateDeckFromTopic(title: string, subject: string): Promise<FlashcardDeck> {
     const deck = await this.createDeck(title, `${subject} - ${title}`, 'pdf');
-    const systemMsg = { role: 'system' as const, content: 'Generate 5-10 flashcards about this topic. Return them as a JSON array of {"front":"question","back":"answer"} objects. Only return valid JSON, no other text.' };
+    const systemMsg = { role: 'system' as const, content: 'Generate 5-10 flashcards about this topic. Return ONLY valid JSON array of {"front":"question","back":"answer"} objects — absolutely no other text, markdown, or explanation.' };
     const userMsg = { role: 'user' as const, content: `Topic: ${title}\nSubject: ${subject}\nGenerate flashcards covering key concepts, definitions, and important facts.` };
     try {
       const response = await aiService.sendMessage([systemMsg, userMsg]);

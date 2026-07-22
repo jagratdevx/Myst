@@ -6,6 +6,7 @@ import { PDFViewerScreen } from '../screens/PDFViewerScreen';
 import { EditProfileScreen } from '../screens/EditProfileScreen';
 import { DeckDetailScreen } from '../screens/DeckDetailScreen';
 import { FlashcardQuizScreen } from '../screens/FlashcardQuizScreen';
+import { FlashcardStudyScreen } from '../screens/FlashcardStudyScreen';
 import { OnboardingWelcome } from '../screens/Onboarding/OnboardingWelcome';
 import { OnboardingProfile } from '../screens/Onboarding/OnboardingProfile';
 import { OnboardingSubjects } from '../screens/Onboarding/OnboardingSubjects';
@@ -70,6 +71,7 @@ export const RootNavigator = () => {
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="DeckDetail" component={DeckDetailScreen} />
         <Stack.Screen name="FlashcardQuiz" component={FlashcardQuizScreen} />
+        <Stack.Screen name="FlashcardStudy" component={FlashcardStudyScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

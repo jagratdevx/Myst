@@ -67,10 +67,16 @@ export const DeckDetailScreen = () => {
           <Text style={[styles.deckCount, { color: colors.textSecondary }]}>{deckCards.length} cards</Text>
         </View>
         {deckCards.length > 0 && (
-          <TouchableOpacity style={[styles.quizBtn, { backgroundColor: colors.accent }]} onPress={() => navigation.navigate('FlashcardQuiz' as never, { deckId } as never)}>
-            <Play size={18} color="#fff" />
-            <Text style={styles.quizText}>Quiz</Text>
-          </TouchableOpacity>
+          <View style={styles.headerActions}>
+            <TouchableOpacity style={[styles.headerBtn, { backgroundColor: `${colors.accentSecondary}20` }]} onPress={() => navigation.navigate('FlashcardStudy' as never, { deckId } as never)}>
+              <Play size={16} color={colors.accentSecondary} />
+              <Text style={[styles.headerBtnText, { color: colors.accentSecondary }]}>Study</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.headerBtn, { backgroundColor: colors.accent }]} onPress={() => navigation.navigate('FlashcardQuiz' as never, { deckId } as never)}>
+              <Play size={16} color="#fff" />
+              <Text style={[styles.headerBtnText, { color: '#fff' }]}>Quiz</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
 
@@ -128,8 +134,9 @@ const styles = StyleSheet.create({
   headerInfo: { flex: 1 },
   deckTitle: { fontSize: 22, fontWeight: '800' },
   deckCount: { fontSize: 13, fontWeight: '500', marginTop: 2 },
-  quizBtn: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, gap: 6 },
-  quizText: { color: '#fff', fontSize: 14, fontWeight: '700' },
+  headerActions: { flexDirection: 'row', gap: 8 },
+  headerBtn: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, gap: 6 },
+  headerBtnText: { fontSize: 13, fontWeight: '700' },
   listContent: { paddingHorizontal: 16, paddingBottom: 100 },
   cardItem: { padding: 16, marginBottom: 12 },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
